@@ -30,14 +30,14 @@ use IEEE.STD_LOGIC_1164.ALL;
 --use UNISIM.VComponents.all;
 
 entity top is
-    Port ( a : in  STD_LOGIC;
-           b : out  STD_LOGIC);
+    Port ( GPIO_DIP_SW1 : in  STD_LOGIC;
+           GPIO_LED_0 : out  STD_LOGIC);
 end top;
 
 architecture Behavioral of top is
 
 begin
-
+    GPIO_LED_0 <= GPIO_DIP_SW1;
 
 end Behavioral;
 
