@@ -4,3 +4,7 @@ iseconfig/
 *.tcl
 tmp
 _xmsgs
+ipcore_dir/sata_platform/doc/
+ipcore_dir/sata_platform/example_design/
+ipcore_dir/sata_platform/simulation/
+*.ncf
