@@ -1,2 +1,6 @@
 out/*
 iseconfig/
+*.log
+*.tcl
+tmp
+_xmsgs
