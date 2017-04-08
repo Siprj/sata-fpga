@@ -13,6 +13,8 @@ into the repository...
   http://ulinktech.com/wp-content/uploads/2015/02/ATA_command_table_OPCode.pdf
 * ata-atapi-command-set-2-acs-2.pdf -
   http://www.t13.org/Documents/UploadedDocuments/docs2009/d2015r2-ATAATAPI_Command_set_-_2_ACS-2.pdf
+* Design-of-an-Open-Source-Sata-Core-for-Virtex-4-FPGAs.pdf -
+  http://scholarworks.umass.edu/cgi/viewcontent.cgi?article=2250&context=theses
 
 ## XUPV5-LX110T Board
 
