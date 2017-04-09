@@ -461,50 +461,51 @@ begin
         TILE0_CLKIN_IN                  =>      ,
         TILE0_GTPRESET_IN               =>      ,
         TILE0_PLLLKDET_OUT              =>      ,
+        -- TODO: Why thus this exist?
         TILE0_REFCLKOUT_OUT             =>      ,
         TILE0_RESETDONE0_OUT            =>      ,
-        TILE0_RESETDONE1_OUT            =>      ,
+        TILE0_RESETDONE1_OUT            =>      open,
 
 
 
         ----------------------- Receive Ports - 8b10b Decoder ----------------------
-        TILE0_RXCHARISK1_OUT            =>      ,
-        TILE0_RXDISPERR1_OUT            =>      ,
-        TILE0_RXCHARISCOMMA1_OUT        =>      ,
-        TILE0_RXNOTINTABLE1_OUT         =>      ,
+        TILE0_RXCHARISK1_OUT            =>      open,
+        TILE0_RXDISPERR1_OUT            =>      open,
+        TILE0_RXCHARISCOMMA1_OUT        =>      open,
+        TILE0_RXNOTINTABLE1_OUT         =>      open,
         ------------------- Receive Ports - Clock Correction Ports -----------------
-        TILE0_RXCLKCORCNT1_OUT          =>      ,
+        TILE0_RXCLKCORCNT1_OUT          =>      open,
         --------------- Receive Ports - Comma Detection and Alignment --------------
         TILE0_RXENMCOMMAALIGN1_IN       =>      '1',
         TILE0_RXENPCOMMAALIGN1_IN       =>      '1',
         ------------------- Receive Ports - RX Data Path interface -----------------
-        TILE0_RXDATA1_OUT               =>      ,
-        TILE0_RXRECCLK1_OUT             =>      ,
-        TILE0_RXUSRCLK1_IN              =>      ,
-        TILE0_RXUSRCLK21_IN             =>      ,
+        TILE0_RXDATA1_OUT               =>      open,
+        TILE0_RXRECCLK1_OUT             =>      open,
+        TILE0_RXUSRCLK1_IN              =>      open,
+        TILE0_RXUSRCLK21_IN             =>      open,
         ------- Receive Ports - RX Driver,OOB signalling,Coupling and Eq.,CDR ------
-        TILE0_RXELECIDLE1_OUT           =>      ,
-        TILE0_RXEQMIX1_IN               =>      ,
-        TILE0_RXEQPOLE1_IN              =>      ,
-        TILE0_RXN1_IN                   =>      ,
-        TILE0_RXP1_IN                   =>      ,
+        TILE0_RXELECIDLE1_OUT           =>      open,
+        TILE0_RXEQMIX1_IN               =>      open,
+        TILE0_RXEQPOLE1_IN              =>      open,
+        TILE0_RXN1_IN                   =>      open,
+        TILE0_RXP1_IN                   =>      open,
         -------- Receive Ports - RX Elastic Buffer and Phase Alignment Ports -------
-        TILE0_RXSTATUS1_OUT             =>      ,
+        TILE0_RXSTATUS1_OUT             =>      open,
         ---------------- Transmit Ports - 8b10b Encoder Control Ports --------------
-        TILE0_TXCHARISK1_IN             =>      ,
+        TILE0_TXCHARISK1_IN             =>      open,
         ------------------ Transmit Ports - TX Data Path interface -----------------
-        TILE0_TXDATA1_IN                =>      ,
-        TILE0_TXOUTCLK1_OUT             =>      ,
-        TILE0_TXUSRCLK1_IN              =>      ,
-        TILE0_TXUSRCLK21_IN             =>      ,
+        TILE0_TXDATA1_IN                =>      open,
+        TILE0_TXOUTCLK1_OUT             =>      open,
+        TILE0_TXUSRCLK1_IN              =>      open,
+        TILE0_TXUSRCLK21_IN             =>      open,
         --------------- Transmit Ports - TX Driver and OOB signalling --------------
-        TILE0_TXN1_OUT                  =>      ,
-        TILE0_TXP1_OUT                  =>      ,
+        TILE0_TXN1_OUT                  =>      open,
+        TILE0_TXP1_OUT                  =>      open,
         ----------------- Transmit Ports - TX Ports for PCI Express ----------------
-        TILE0_TXELECIDLE1_IN            =>      ,
+        TILE0_TXELECIDLE1_IN            =>      open,
         --------------------- Transmit Ports - TX Ports for SATA -------------------
-        TILE0_TXCOMSTART1_IN            =>      ,
-        TILE0_TXCOMTYPE1_IN             =>
+        TILE0_TXCOMSTART1_IN            =>      open,
+        TILE0_TXCOMTYPE1_IN             =>      open
     );
 
 
