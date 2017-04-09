@@ -137,39 +137,64 @@ architecture Behavioral of top is
         clk : IN std_logic;
         rst : IN std_logic;
 
-        -- Controls where and how much data will be written
+        -- Controls where and how much data will be written.
         sector_address : IN std_logic_vector(47 downto 0);
         sector_count : IN std_logic_vector(15 downto 0);
 
-        -- Ready for commands (linkup && sata_ready && !sata_busy)
+        -- When the 'platform_ready' signal is high and the stack is not linked
+        -- up it will continually send out the SATA OOB signals to the hard
+        -- drive in order to initiate a linkup sequence. Once the entire linkup
+        -- sequence is finished the 'linkup' signal will go high.
         linkup : OUT std_logic;
+        -- Ready for commands (linkup && sata_ready && !sata_busy)
         sata_busy : OUT std_logic;
         sata_ready : OUT std_logic;
 
-        -- Reset the command layer and send software reset to the hard drive
+        -- Reset the command layer and send software reset to the hard drive.
         command_layer_reset : IN std_logic;
+        -- Command enable signal. Similar to write enable signal in ram, etc.
         execute_command_stb : IN std_logic;
+        -- Hard drive command describing what operation will occur in near
+        -- future. For example 0x25: READ_DATA_EXT, 0x35: WRITE_DMA_EXT
+        -- commands.
         hard_drive_command : IN std_logic_vector(7 downto 0);
+        -- When some thing bad is reported by HD.
         hard_drive_error : OUT std_logic;
+        -- Can be used together with command to enable some advanced features.
+        user_features : IN std_logic_vector(15 downto 0);
+        -- Terminate command which is already in progress. NOT TESTED!!!
+        send_sync_escape : IN std_logic;
 
-        link_layer_ready : OUT std_logic;
-        phy_ready : OUT std_logic;
-        platform_error : OUT std_logic;
-        platform_ready : IN std_logic;
+
+        -- I don't know what this is ... These are disconnected in this example:
+        -- https://github.com/CospanDesign/nysa-verilog/blob/master/verilog/wishbone/slave/wb_sata/rtl/wb_sata.v#L457
+        -- so I'll do the same.
         slw_buffer_pos : OUT std_logic_vector(3 downto 0)
         slw_d_count : OUT std_logic_vector(12 downto 0);
         slw_in_data_addra : OUT std_logic_vector(23 downto 0);
         slw_write_count : OUT std_logic_vector(12 downto 0);
+
+        -- Signal representing that the hardware part of the SATA is up and
+        -- running. In case of Xilinx it is signal
+        platform_ready : IN std_logic;
+
+        link_layer_ready : OUT std_logic;
+        phy_ready : OUT std_logic;
+        platform_error : OUT std_logic;
         transport_layer_ready : OUT std_logic;
-        user_features : IN std_logic_vector(15 downto 0);
+
+        -- When communicated with the 'peripheral IO' portion of the SATA
+        -- stack, this flag will indicate that there is data from the hard
+        -- drive ready on the data interface (see below how to read data from
+        -- the hard drive.
         pio_data_ready : OUT std_logic;
 
-        send_sync_escape : IN std_logic;
-
+        -- These two signal should be used for debugging purposes in normal
+        -- operations must be high (1).
         data_scrambler_en : IN std_logic;
         prim_scrambler_en : IN std_logic;
 
-        -- Hard Drive status signals
+        -- Hard Drive status signals.
         d2h_data_stb : OUT std_logic;
         d2h_device : OUT std_logic_vector(7 downto 0);
         d2h_error : OUT std_logic_vector(7 downto 0);
@@ -186,7 +211,7 @@ architecture Behavioral of top is
         pio_setup_stb : OUT std_logic;
         set_device_bits_stb : OUT std_logic;
 
-        -- Platform signals
+        -- Platform signals.
         comm_init_detect : IN std_logic;
         comm_wake_detect : IN std_logic;
         phy_error : IN std_logic;
@@ -201,7 +226,7 @@ architecture Behavioral of top is
         tx_is_k : OUT std_logic;
         tx_oob_complete : IN std_logic;
 
-        -- Data in port
+        -- Data in port.
         data_in_clk : IN std_logic;
         data_in_clk_valid : IN std_logic;
         user_din_activate : IN std_logic_vector(1 downto 0);
@@ -211,7 +236,7 @@ architecture Behavioral of top is
         user_din_size : OUT std_logic_vector(23 downto 0);
         user_din_stb : IN std_logic;
 
-        -- Data out port
+        -- Data out port.
         data_out_clk : IN std_logic;
         data_out_clk_valid : IN std_logic;
         user_dout_activate : IN std_logic;
@@ -220,7 +245,7 @@ architecture Behavioral of top is
         user_dout_size : OUT std_logic_vector(23 downto 0);
         user_dout_stb : IN std_logic;
 
-        -- Debug signals
+        -- Debug signals.
         dbg_cc_lax_state : OUT std_logic_vector(3 downto 0);
         dbg_cw_lax_state : OUT std_logic_vector(3 downto 0);
         dbg_detect_align : OUT std_logic;
