@@ -212,7 +212,11 @@ architecture Behavioral of top is
         set_device_bits_stb : OUT std_logic;
 
         -- Platform signals.
+        -- The hardware will tell the SATA stack that the COMINIT was detected.
+        -- On Virtex 5 it will be one of the RXSTATUS bits.
         comm_init_detect : IN std_logic;
+        -- The hardware will tell the SATA stack that the COMWAKE was detected.
+        -- On Virtex 5 it will be one of the RXSTATUS bits.
         comm_wake_detect : IN std_logic;
         phy_error : IN std_logic;
         rx_byte_is_aligned : IN std_logic;
@@ -277,6 +281,9 @@ architecture Behavioral of top is
         oob_state : OUT std_logic_vector(3 downto 0);
         );
     END COMPONENT;
+
+    signal comm_init_detect_s : std_logic := 0;
+    signal comm_wake_detect_s : std_logic := 0;
 
 begin
     GPIO_LED_0 <= GPIO_DIP_SW1;
@@ -350,8 +357,8 @@ begin
         rx_is_k => ,
         rx_elec_idle => ,
         rx_byte_is_aligned => ,
-        comm_init_detect => ,
-        comm_wake_detect => ,
+        comm_init_detect => comm_init_detect_s,
+        comm_wake_detect => comm_wake_detect_s,
         tx_oob_complete => ,
         phy_error => ,
         dbg_cc_lax_state => open,
@@ -430,7 +437,11 @@ begin
         TILE0_RXN0_IN                   =>      ,
         TILE0_RXP0_IN                   =>      ,
         -------- Receive Ports - RX Elastic Buffer and Phase Alignment Ports -------
-        TILE0_RXSTATUS0_OUT             =>      ,
+        -- TODO: is this correct? TILE0_RXSTATUS0_OUT(0) is TXCOMSTART and it
+        -- is weird not to be connected...
+        TILE0_RXSTATUS0_OUT(0)          => open,
+        TILE0_RXSTATUS0_OUT(1)          => comm_wake_detect_s,
+        TILE0_RXSTATUS0_OUT(2)          => comm_init_detect_s,
         ---------------- Transmit Ports - 8b10b Encoder Control Ports --------------
         TILE0_TXCHARISK0_IN             =>      ,
         ------------------ Transmit Ports - TX Data Path interface -----------------
