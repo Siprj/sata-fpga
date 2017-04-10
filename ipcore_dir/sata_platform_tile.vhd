@@ -118,10 +118,6 @@ port
     ------- Receive Ports - RX Driver,OOB signalling,Coupling and Eq.,CDR ------
     RXELECIDLE0_OUT                         : out  std_logic;
     RXELECIDLE1_OUT                         : out  std_logic;
-    RXEQMIX0_IN                             : in   std_logic_vector(1 downto 0);
-    RXEQMIX1_IN                             : in   std_logic_vector(1 downto 0);
-    RXEQPOLE0_IN                            : in   std_logic_vector(3 downto 0);
-    RXEQPOLE1_IN                            : in   std_logic_vector(3 downto 0);
     RXN0_IN                                 : in   std_logic;
     RXN1_IN                                 : in   std_logic;
     RXP0_IN                                 : in   std_logic;
@@ -615,12 +611,12 @@ begin
         RXELECIDLE1                     =>      rxelecidle1_i,
         RXELECIDLERESET0                =>      rxelecidlereset0_i,
         RXELECIDLERESET1                =>      rxelecidlereset1_i,
-        RXENEQB0                        =>      tied_to_ground_i,
-        RXENEQB1                        =>      tied_to_ground_i,
-        RXEQMIX0                        =>      RXEQMIX0_IN,
-        RXEQMIX1                        =>      RXEQMIX1_IN,
-        RXEQPOLE0                       =>      RXEQPOLE0_IN,
-        RXEQPOLE1                       =>      RXEQPOLE1_IN,
+        RXENEQB0                        =>      tied_to_vcc_i,
+        RXENEQB1                        =>      tied_to_vcc_i,
+        RXEQMIX0                        =>      tied_to_ground_vec_i(1 downto 0),
+        RXEQMIX1                        =>      tied_to_ground_vec_i(1 downto 0),
+        RXEQPOLE0                       =>      tied_to_ground_vec_i(3 downto 0),
+        RXEQPOLE1                       =>      tied_to_ground_vec_i(3 downto 0),
         RXN0                            =>      RXN0_IN,
         RXN1                            =>      RXN1_IN,
         RXP0                            =>      RXP0_IN,

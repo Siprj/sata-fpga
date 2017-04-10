@@ -117,10 +117,6 @@ port
     ------- Receive Ports - RX Driver,OOB signalling,Coupling and Eq.,CDR ------
     TILE0_RXELECIDLE0_OUT                   : out  std_logic;
     TILE0_RXELECIDLE1_OUT                   : out  std_logic;
-    TILE0_RXEQMIX0_IN                       : in   std_logic_vector(1 downto 0);
-    TILE0_RXEQMIX1_IN                       : in   std_logic_vector(1 downto 0);
-    TILE0_RXEQPOLE0_IN                      : in   std_logic_vector(3 downto 0);
-    TILE0_RXEQPOLE1_IN                      : in   std_logic_vector(3 downto 0);
     TILE0_RXN0_IN                           : in   std_logic;
     TILE0_RXN1_IN                           : in   std_logic;
     TILE0_RXP0_IN                           : in   std_logic;
@@ -234,10 +230,6 @@ port
     ------- Receive Ports - RX Driver,OOB signalling,Coupling and Eq.,CDR ------
     RXELECIDLE0_OUT                         : out  std_logic;
     RXELECIDLE1_OUT                         : out  std_logic;
-    RXEQMIX0_IN                             : in   std_logic_vector(1 downto 0);
-    RXEQMIX1_IN                             : in   std_logic_vector(1 downto 0);
-    RXEQPOLE0_IN                            : in   std_logic_vector(3 downto 0);
-    RXEQPOLE1_IN                            : in   std_logic_vector(3 downto 0);
     RXN0_IN                                 : in   std_logic;
     RXN1_IN                                 : in   std_logic;
     RXP0_IN                                 : in   std_logic;
@@ -345,10 +337,6 @@ begin
         ------- Receive Ports - RX Driver,OOB signalling,Coupling and Eq.,CDR ------
         RXELECIDLE0_OUT                 =>      TILE0_RXELECIDLE0_OUT,
         RXELECIDLE1_OUT                 =>      TILE0_RXELECIDLE1_OUT,
-        RXEQMIX0_IN                     =>      TILE0_RXEQMIX0_IN,
-        RXEQMIX1_IN                     =>      TILE0_RXEQMIX1_IN,
-        RXEQPOLE0_IN                    =>      TILE0_RXEQPOLE0_IN,
-        RXEQPOLE1_IN                    =>      TILE0_RXEQPOLE1_IN,
         RXN0_IN                         =>      TILE0_RXN0_IN,
         RXN1_IN                         =>      TILE0_RXN1_IN,
         RXP0_IN                         =>      TILE0_RXP0_IN,

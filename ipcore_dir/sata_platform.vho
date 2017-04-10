@@ -110,10 +110,6 @@ port
     ------- Receive Ports - RX Driver,OOB signalling,Coupling and Eq.,CDR ------
     TILE0_RXELECIDLE0_OUT                   : out  std_logic;
     TILE0_RXELECIDLE1_OUT                   : out  std_logic;
-    TILE0_RXEQMIX0_IN                       : in   std_logic_vector(1 downto 0);
-    TILE0_RXEQMIX1_IN                       : in   std_logic_vector(1 downto 0);
-    TILE0_RXEQPOLE0_IN                      : in   std_logic_vector(3 downto 0);
-    TILE0_RXEQPOLE1_IN                      : in   std_logic_vector(3 downto 0);
     TILE0_RXN0_IN                           : in   std_logic;
     TILE0_RXN1_IN                           : in   std_logic;
     TILE0_RXP0_IN                           : in   std_logic;
@@ -211,10 +207,6 @@ end component;
         ------- Receive Ports - RX Driver,OOB signalling,Coupling and Eq.,CDR ------
         TILE0_RXELECIDLE0_OUT           =>      ,
         TILE0_RXELECIDLE1_OUT           =>      ,
-        TILE0_RXEQMIX0_IN               =>      ,
-        TILE0_RXEQMIX1_IN               =>      ,
-        TILE0_RXEQPOLE0_IN              =>      ,
-        TILE0_RXEQPOLE1_IN              =>      ,
         TILE0_RXN0_IN                   =>      ,
         TILE0_RXN1_IN                   =>      ,
         TILE0_RXP0_IN                   =>      ,
