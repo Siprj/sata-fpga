@@ -82,14 +82,14 @@ port
     --TILE0  (Location)
 
     ----------------------- Receive Ports - 8b10b Decoder ----------------------
-    TILE0_RXCHARISCOMMA0_OUT                : out  std_logic;
-    TILE0_RXCHARISCOMMA1_OUT                : out  std_logic;
-    TILE0_RXCHARISK0_OUT                    : out  std_logic;
-    TILE0_RXCHARISK1_OUT                    : out  std_logic;
-    TILE0_RXDISPERR0_OUT                    : out  std_logic;
-    TILE0_RXDISPERR1_OUT                    : out  std_logic;
-    TILE0_RXNOTINTABLE0_OUT                 : out  std_logic;
-    TILE0_RXNOTINTABLE1_OUT                 : out  std_logic;
+    TILE0_RXCHARISCOMMA0_OUT                : out  std_logic_vector(1 downto 0);
+    TILE0_RXCHARISCOMMA1_OUT                : out  std_logic_vector(1 downto 0);
+    TILE0_RXCHARISK0_OUT                    : out  std_logic_vector(1 downto 0);
+    TILE0_RXCHARISK1_OUT                    : out  std_logic_vector(1 downto 0);
+    TILE0_RXDISPERR0_OUT                    : out  std_logic_vector(1 downto 0);
+    TILE0_RXDISPERR1_OUT                    : out  std_logic_vector(1 downto 0);
+    TILE0_RXNOTINTABLE0_OUT                 : out  std_logic_vector(1 downto 0);
+    TILE0_RXNOTINTABLE1_OUT                 : out  std_logic_vector(1 downto 0);
     ------------------- Receive Ports - Clock Correction Ports -----------------
     TILE0_RXCLKCORCNT0_OUT                  : out  std_logic_vector(2 downto 0);
     TILE0_RXCLKCORCNT1_OUT                  : out  std_logic_vector(2 downto 0);
@@ -99,8 +99,8 @@ port
     TILE0_RXENPCOMMAALIGN0_IN               : in   std_logic;
     TILE0_RXENPCOMMAALIGN1_IN               : in   std_logic;
     ------------------- Receive Ports - RX Data Path interface -----------------
-    TILE0_RXDATA0_OUT                       : out  std_logic_vector(7 downto 0);
-    TILE0_RXDATA1_OUT                       : out  std_logic_vector(7 downto 0);
+    TILE0_RXDATA0_OUT                       : out  std_logic_vector(15 downto 0);
+    TILE0_RXDATA1_OUT                       : out  std_logic_vector(15 downto 0);
     TILE0_RXRECCLK0_OUT                     : out  std_logic;
     TILE0_RXRECCLK1_OUT                     : out  std_logic;
     TILE0_RXUSRCLK0_IN                      : in   std_logic;
@@ -125,11 +125,11 @@ port
     TILE0_RESETDONE0_OUT                    : out  std_logic;
     TILE0_RESETDONE1_OUT                    : out  std_logic;
     ---------------- Transmit Ports - 8b10b Encoder Control Ports --------------
-    TILE0_TXCHARISK0_IN                     : in   std_logic;
-    TILE0_TXCHARISK1_IN                     : in   std_logic;
+    TILE0_TXCHARISK0_IN                     : in   std_logic_vector(1 downto 0);
+    TILE0_TXCHARISK1_IN                     : in   std_logic_vector(1 downto 0);
     ------------------ Transmit Ports - TX Data Path interface -----------------
-    TILE0_TXDATA0_IN                        : in   std_logic_vector(7 downto 0);
-    TILE0_TXDATA1_IN                        : in   std_logic_vector(7 downto 0);
+    TILE0_TXDATA0_IN                        : in   std_logic_vector(15 downto 0);
+    TILE0_TXDATA1_IN                        : in   std_logic_vector(15 downto 0);
     TILE0_TXOUTCLK0_OUT                     : out  std_logic;
     TILE0_TXOUTCLK1_OUT                     : out  std_logic;
     TILE0_TXUSRCLK0_IN                      : in   std_logic;

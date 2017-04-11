@@ -90,14 +90,14 @@ generic
 port 
 (
     ----------------------- Receive Ports - 8b10b Decoder ----------------------
-    RXCHARISCOMMA0_OUT                      : out  std_logic;
-    RXCHARISCOMMA1_OUT                      : out  std_logic;
-    RXCHARISK0_OUT                          : out  std_logic;
-    RXCHARISK1_OUT                          : out  std_logic;
-    RXDISPERR0_OUT                          : out  std_logic;
-    RXDISPERR1_OUT                          : out  std_logic;
-    RXNOTINTABLE0_OUT                       : out  std_logic;
-    RXNOTINTABLE1_OUT                       : out  std_logic;
+    RXCHARISCOMMA0_OUT                      : out  std_logic_vector(1 downto 0);
+    RXCHARISCOMMA1_OUT                      : out  std_logic_vector(1 downto 0);
+    RXCHARISK0_OUT                          : out  std_logic_vector(1 downto 0);
+    RXCHARISK1_OUT                          : out  std_logic_vector(1 downto 0);
+    RXDISPERR0_OUT                          : out  std_logic_vector(1 downto 0);
+    RXDISPERR1_OUT                          : out  std_logic_vector(1 downto 0);
+    RXNOTINTABLE0_OUT                       : out  std_logic_vector(1 downto 0);
+    RXNOTINTABLE1_OUT                       : out  std_logic_vector(1 downto 0);
     ------------------- Receive Ports - Clock Correction Ports -----------------
     RXCLKCORCNT0_OUT                        : out  std_logic_vector(2 downto 0);
     RXCLKCORCNT1_OUT                        : out  std_logic_vector(2 downto 0);
@@ -107,8 +107,8 @@ port
     RXENPCOMMAALIGN0_IN                     : in   std_logic;
     RXENPCOMMAALIGN1_IN                     : in   std_logic;
     ------------------- Receive Ports - RX Data Path interface -----------------
-    RXDATA0_OUT                             : out  std_logic_vector(7 downto 0);
-    RXDATA1_OUT                             : out  std_logic_vector(7 downto 0);
+    RXDATA0_OUT                             : out  std_logic_vector(15 downto 0);
+    RXDATA1_OUT                             : out  std_logic_vector(15 downto 0);
     RXRECCLK0_OUT                           : out  std_logic;
     RXRECCLK1_OUT                           : out  std_logic;
     RXUSRCLK0_IN                            : in   std_logic;
@@ -133,11 +133,11 @@ port
     RESETDONE0_OUT                          : out  std_logic;
     RESETDONE1_OUT                          : out  std_logic;
     ---------------- Transmit Ports - 8b10b Encoder Control Ports --------------
-    TXCHARISK0_IN                           : in   std_logic;
-    TXCHARISK1_IN                           : in   std_logic;
+    TXCHARISK0_IN                           : in   std_logic_vector(1 downto 0);
+    TXCHARISK1_IN                           : in   std_logic_vector(1 downto 0);
     ------------------ Transmit Ports - TX Data Path interface -----------------
-    TXDATA0_IN                              : in   std_logic_vector(7 downto 0);
-    TXDATA1_IN                              : in   std_logic_vector(7 downto 0);
+    TXDATA0_IN                              : in   std_logic_vector(15 downto 0);
+    TXDATA1_IN                              : in   std_logic_vector(15 downto 0);
     TXOUTCLK0_OUT                           : out  std_logic;
     TXOUTCLK1_OUT                           : out  std_logic;
     TXUSRCLK0_IN                            : in   std_logic;
@@ -180,16 +180,9 @@ architecture RTL of SATA_PLATFORM_TILE is
 
     -- RX Datapath signals
     signal rxdata0_i                        :   std_logic_vector(15 downto 0);      
-    signal rxchariscomma0_float_i           :   std_logic;
-    signal rxcharisk0_float_i               :   std_logic;
-    signal rxdisperr0_float_i               :   std_logic;
-    signal rxnotintable0_float_i            :   std_logic;
-    signal rxrundisp0_float_i               :   std_logic;
 
     -- TX Datapath signals
     signal txdata0_i                        :   std_logic_vector(15 downto 0);
-    signal txkerr0_float_i                  :   std_logic;
-    signal txrundisp0_float_i               :   std_logic;
 
     -- Electrical idle reset logic signals
     signal loopback0_i                      :   std_logic_vector(2 downto 0);
@@ -201,16 +194,9 @@ architecture RTL of SATA_PLATFORM_TILE is
 
     -- RX Datapath signals
     signal rxdata1_i                        :   std_logic_vector(15 downto 0);      
-    signal rxchariscomma1_float_i           :   std_logic;
-    signal rxcharisk1_float_i               :   std_logic;
-    signal rxdisperr1_float_i               :   std_logic;
-    signal rxnotintable1_float_i            :   std_logic;
-    signal rxrundisp1_float_i               :   std_logic;
 
     -- TX Datapath signals
     signal txdata1_i                        :   std_logic_vector(15 downto 0);
-    signal txkerr1_float_i                  :   std_logic;
-    signal txrundisp1_float_i               :   std_logic;
 
     -- Electrical idle reset logic signals
     signal loopback1_i                      :   std_logic_vector(2 downto 0);
@@ -244,14 +230,18 @@ begin
     
 
     -------------------  GTP Datapath byte mapping  -----------------    
-    
-    RXDATA0_OUT    <=   rxdata0_i(7 downto 0);
-    
-    txdata0_i    <=   (tied_to_ground_vec_i(7 downto 0) & TXDATA0_IN);    
-    
-    RXDATA1_OUT    <=   rxdata1_i(7 downto 0);
-    
-    txdata1_i    <=   (tied_to_ground_vec_i(7 downto 0) & TXDATA1_IN);    
+
+    -- The GTP provides little endian data (first byte received on RXDATA(7 downto 0))    
+    RXDATA0_OUT    <=   rxdata0_i;
+
+    -- The GTP transmits little endian data (TXDATA(7 downto 0) transmitted first)    
+    txdata0_i    <=   TXDATA0_IN;
+
+    -- The GTP provides little endian data (first byte received on RXDATA(7 downto 0))    
+    RXDATA1_OUT    <=   rxdata1_i;
+
+    -- The GTP transmits little endian data (TXDATA(7 downto 0) transmitted first)    
+    txdata1_i    <=   TXDATA1_IN;
 
 
 
@@ -537,24 +527,16 @@ begin
         TXPOWERDOWN0                    =>      tied_to_ground_vec_i(1 downto 0),
         TXPOWERDOWN1                    =>      tied_to_ground_vec_i(1 downto 0),
         ----------------------- Receive Ports - 8b10b Decoder ----------------------
-        RXCHARISCOMMA0(1)               =>      rxchariscomma0_float_i,
-        RXCHARISCOMMA0(0)               =>      RXCHARISCOMMA0_OUT,
-        RXCHARISCOMMA1(1)               =>      rxchariscomma1_float_i,
-        RXCHARISCOMMA1(0)               =>      RXCHARISCOMMA1_OUT,
-        RXCHARISK0(1)                   =>      rxcharisk0_float_i,
-        RXCHARISK0(0)                   =>      RXCHARISK0_OUT,
-        RXCHARISK1(1)                   =>      rxcharisk1_float_i,
-        RXCHARISK1(0)                   =>      RXCHARISK1_OUT,
+        RXCHARISCOMMA0                  =>      RXCHARISCOMMA0_OUT,
+        RXCHARISCOMMA1                  =>      RXCHARISCOMMA1_OUT,
+        RXCHARISK0                      =>      RXCHARISK0_OUT,
+        RXCHARISK1                      =>      RXCHARISK1_OUT,
         RXDEC8B10BUSE0                  =>      tied_to_vcc_i,
         RXDEC8B10BUSE1                  =>      tied_to_vcc_i,
-        RXDISPERR0(1)                   =>      rxdisperr0_float_i,
-        RXDISPERR0(0)                   =>      RXDISPERR0_OUT,
-        RXDISPERR1(1)                   =>      rxdisperr1_float_i,
-        RXDISPERR1(0)                   =>      RXDISPERR1_OUT,
-        RXNOTINTABLE0(1)                =>      rxnotintable0_float_i,
-        RXNOTINTABLE0(0)                =>      RXNOTINTABLE0_OUT,
-        RXNOTINTABLE1(1)                =>      rxnotintable1_float_i,
-        RXNOTINTABLE1(0)                =>      RXNOTINTABLE1_OUT,
+        RXDISPERR0                      =>      RXDISPERR0_OUT,
+        RXDISPERR1                      =>      RXDISPERR1_OUT,
+        RXNOTINTABLE0                   =>      RXNOTINTABLE0_OUT,
+        RXNOTINTABLE1                   =>      RXNOTINTABLE1_OUT,
         RXRUNDISP0                      =>      open,
         RXRUNDISP1                      =>      open,
         ------------------- Receive Ports - Channel Bonding Ports ------------------
@@ -594,8 +576,8 @@ begin
         ------------------- Receive Ports - RX Data Path interface -----------------
         RXDATA0                         =>      rxdata0_i,
         RXDATA1                         =>      rxdata1_i,
-        RXDATAWIDTH0                    =>      tied_to_ground_i,
-        RXDATAWIDTH1                    =>      tied_to_ground_i,
+        RXDATAWIDTH0                    =>      tied_to_vcc_i,
+        RXDATAWIDTH1                    =>      tied_to_vcc_i,
         RXRECCLK0                       =>      RXRECCLK0_OUT,
         RXRECCLK1                       =>      RXRECCLK1_OUT,
         RXRESET0                        =>      tied_to_ground_i,
@@ -680,10 +662,8 @@ begin
         TXCHARDISPMODE1                 =>      tied_to_ground_vec_i(1 downto 0),
         TXCHARDISPVAL0                  =>      tied_to_ground_vec_i(1 downto 0),
         TXCHARDISPVAL1                  =>      tied_to_ground_vec_i(1 downto 0),
-        TXCHARISK0(1)                   =>      tied_to_ground_i,
-        TXCHARISK0(0)                   =>      TXCHARISK0_IN,
-        TXCHARISK1(1)                   =>      tied_to_ground_i,
-        TXCHARISK1(0)                   =>      TXCHARISK1_IN,
+        TXCHARISK0                      =>      TXCHARISK0_IN,
+        TXCHARISK1                      =>      TXCHARISK1_IN,
         TXENC8B10BUSE0                  =>      tied_to_vcc_i,
         TXENC8B10BUSE1                  =>      tied_to_vcc_i,
         TXKERR0                         =>      open,
@@ -696,8 +676,8 @@ begin
         ------------------ Transmit Ports - TX Data Path interface -----------------
         TXDATA0                         =>      txdata0_i,
         TXDATA1                         =>      txdata1_i,
-        TXDATAWIDTH0                    =>      tied_to_ground_i,
-        TXDATAWIDTH1                    =>      tied_to_ground_i,
+        TXDATAWIDTH0                    =>      tied_to_vcc_i,
+        TXDATAWIDTH1                    =>      tied_to_vcc_i,
         TXOUTCLK0                       =>      TXOUTCLK0_OUT,
         TXOUTCLK1                       =>      TXOUTCLK1_OUT,
         TXRESET0                        =>      tied_to_ground_i,
