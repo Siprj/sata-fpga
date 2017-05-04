@@ -1,2 +1,4 @@
 NET  GPIO_DIP_SW1         LOC="U25";   # Bank 15, Vcco=1.8V, DCI using 49.9 ohm resistors
 NET  GPIO_LED_0           LOC="H18";   # Bank 3, Vcco=2.5V, No DCI
+NET  SATACLK_QO_N         LOC="Y3";    # Bank 114, MGTREFCLKN_114, GTP_DUAL_X0Y2
+NET  SATACLK_QO_P         LOC="Y4";    # Bank 114, MGTREFCLKP_114, GTP_DUAL_X0Y2
