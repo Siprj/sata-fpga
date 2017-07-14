@@ -42,7 +42,7 @@ end data_write;
 
 architecture Behavioral of data_write is
 
-signal r_count : std_logic_vector (23 downto 0) := 0;
+    signal r_count : std_logic_vector (23 downto 0) := 0;
 
 begin
     -- Reset strobe signals

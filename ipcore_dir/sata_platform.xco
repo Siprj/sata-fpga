@@ -1,7 +1,7 @@
 ##############################################################
 #
 # Xilinx Core Generator version 14.7
-# Date: Mon Apr 10 17:56:29 2017
+# Date: Sun Jul  9 16:13:40 2017
 #
 ##############################################################
 #
@@ -138,7 +138,7 @@ CSET gtp0_ppm_offset=>_+/-_100_or_SSC
 CSET gtp0_prbs_error_threshold=1
 CSET gtp0_preemphasis_level=010
 CSET gtp0_protocol_file=sata2
-CSET gtp0_rx_datapath_width=16
+CSET gtp0_rx_datapath_width=8
 CSET gtp0_rx_decode_seq_match=true
 CSET gtp0_rx_divider=/1
 CSET gtp0_rx_line_rate=3.0
@@ -155,7 +155,7 @@ CSET gtp0_termination_imp=50
 CSET gtp0_trans_time_from_p2=60
 CSET gtp0_trans_time_non_p2=25
 CSET gtp0_trans_time_to_p2=100
-CSET gtp0_tx_datapath_width=16
+CSET gtp0_tx_datapath_width=8
 CSET gtp0_tx_divider=/1
 CSET gtp0_tx_line_rate=3.0
 CSET gtp0_txrx_invert=00000
@@ -418,8 +418,8 @@ CSET use_gtp_dual_x0_y0=false
 CSET use_gtp_dual_x0_y1=false
 CSET use_gtp_dual_x0_y10=false
 CSET use_gtp_dual_x0_y11=false
-CSET use_gtp_dual_x0_y2=false
-CSET use_gtp_dual_x0_y3=true
+CSET use_gtp_dual_x0_y2=true
+CSET use_gtp_dual_x0_y3=false
 CSET use_gtp_dual_x0_y4=false
 CSET use_gtp_dual_x0_y5=false
 CSET use_gtp_dual_x0_y6=false
@@ -438,4 +438,4 @@ CSET use_txbuffer=true
 MISC pkg_timestamp=2013-10-13T18:46:09Z
 # END Extra information
 GENERATE
-# CRC: 6c963af0
+# CRC: a439a2b0
