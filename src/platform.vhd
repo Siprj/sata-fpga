@@ -177,7 +177,7 @@ begin
         I => clk_75mhz_s      -- Clock buffer input
     );
 
-    BUFG_inst : BUFG
+    BUFG_inst2 : BUFG
     port map (
         O => tx_rx_clk_150mhz_bufg_s,     -- Clock buffer output
         I => tx_rx_clk_150mhz_s      -- Clock buffer input
