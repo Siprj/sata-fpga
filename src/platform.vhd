@@ -38,7 +38,7 @@ entity platform is
            TX_N : out STD_LOGIC;
            TX_P : out STD_LOGIC;
            RX_N : in STD_LOGIC;
-           RX_N : in STD_LOGIC);
+           RX_P : in STD_LOGIC);
 end platform;
 
 architecture Behavioral of platform is
@@ -237,8 +237,8 @@ begin
 
         -- Connect directly to the output pin.
         -- SATA on the board is indexed from 1 not from zero so we use SATA 1.
-        TILE0_RXN0_IN => SATA1_RX_N,
-        TILE0_RXP0_IN => SATA1_RX_P,
+        TILE0_RXN0_IN => RX_N,
+        TILE0_RXP0_IN => RX_P,
         -------- Receive Ports - RX Elastic Buffer and Phase Alignment Ports -------
         -- TODO: is this correct? TILE0_RXSTATUS0_OUT(0) is TXCOMSTART and it
         -- is weird not to be connected...
@@ -258,8 +258,8 @@ begin
         --------------- Transmit Ports - TX Driver and OOB signalling --------------
         -- Connect directly to the output pin.
         -- SATA on the board is indexed from 1 not from zero so we use SATA 1.
-        TILE0_TXN0_OUT => SATA1_TX_N,
-        TILE0_TXP0_OUT => SATA1_TX_P,
+        TILE0_TXN0_OUT => TX_N,
+        TILE0_TXP0_OUT => TX_P,
         TILE0_TXELECIDLE0_IN => tx_elec_idle_s,
         --------------------- Transmit Ports - TX Ports for SATA -------------------
         TILE0_TXCOMSTART0_IN =>      ,
