@@ -31,7 +31,7 @@ use IEEE.STD_LOGIC_1164.ALL;
 
 entity data_write is
     Port ( clk : in  STD_LOGIC;
-	        en : in STD_LOGIC;
+           en : in STD_LOGIC;
            data_in : out  STD_LOGIC_VECTOR (31 downto 0);
            user_din_stb : out  STD_LOGIC;
            user_din_ready : in  STD_LOGIC_VECTOR (1 downto 0);
@@ -47,30 +47,30 @@ architecture Behavioral of data_write is
 begin
     -- Reset strobe signals
     if (rising_edge(clk))
-        user_din_stb        <= 0;
+        user_din_stb <= 0;
         if (en) begin
-          if ((user_din_ready > 0) && (user_din_activate == 0))begin
-            r_count     <=  0;
+          if ((user_din_ready > 0) && (user_din_activate == 0)) begin
+            r_count <=  0;
             if (user_din_ready(0)) begin
               -- Channel 0 is open
-              user_din_activate(0)  <=  1;
+              user_din_activate(0) <=  1;
             end
             else begin
               -- Channel 1 is open
-              user_din_activate(1)  <=  1;
+              user_din_activate(1) <=  1;
             end
           end
           else begin
             if (r_count < i_wr_size) begin
               -- More room left in the buffer
-              r_count   <=  r_count + 1;
-              user_din_stb  <=  1;
+              r_count <= r_count + 1;
+              user_din_stb <= 1;
               -- put the count in the data
-              o_wr_data <=  r_count;
+              o_wr_data <= r_count;
             end
             else begin
               -- Filled up the buffer, release it
-              user_din_activate  <=  0;
+              user_din_activate <=  0;
             end
           end
         end
