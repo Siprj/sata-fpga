@@ -7,7 +7,8 @@ entity edge_detector is
            in_i : in  STD_LOGIC;
            positive_o : out  STD_LOGIC;
            negative_o : out  STD_LOGIC;
-           edge_o : out STD_LOGIC);
+           edge_o : out STD_LOGIC
+    );
 end edge_detector;
 
 architecture Behavioral of edge_detector is
