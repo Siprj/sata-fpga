@@ -6,17 +6,18 @@ use UNISIM.vcomponents.all;
 entity platform is
     Port ( -- Must be synchronised to 75 MHz clock
            tx_dout_i : in STD_LOGIC_VECTOR (31 downto 0);
-           tx_is_k_i : in STD_LOGIC_VECTOR (3 downto 0);
+           tx_is_k_i : in STD_LOGIC;
            tx_comm_reset_i : in STD_LOGIC;
            tx_comm_wake_i : in STD_LOGIC;
            tx_elec_idle_i : in STD_LOGIC;
-           tx_oob_complete_o : out STD_LOGIC;
+
            rx_din_o : out STD_LOGIC_VECTOR (31 downto 0);
            rx_is_k_o : out STD_LOGIC;
            rx_elec_idle_o : out  STD_LOGIC;
            rx_byte_is_aligned_o : out STD_LOGIC;
            comm_init_detect_o : out STD_LOGIC;
            comm_wake_detect_o : out STD_LOGIC;
+
            phy_error_o : out STD_LOGIC;
            platform_ready : out STD_LOGIC;
 
@@ -124,14 +125,24 @@ architecture Behavioral of platform is
     );
     end component;
 
+    COMPONENT parallel_to_serila_wrap
+    PORT(
+        fast_clk : IN std_logic;
+        slow_clk : IN std_logic;
+        in_data_i_slow : IN std_logic_vector(31 downto 0);
+        in_is_k_i_slow : IN std_logic;
+        out_is_k_i_fast : OUT std_logic;
+        out_data_o_fast : OUT std_logic_vector(7 downto 0)
+        );
+    END COMPONENT;
+
     signal comm_init_detect_s : std_logic;
     signal comm_wake_detect_s : std_logic;
     signal rx_elec_idle_s : std_logic;
-    signal tx_elec_idle_s : std_logic;
     signal tx_is_k_s : std_logic;
+    signal tx_data_s : std_logic_vector (7 downto 0);
     signal rx_is_k_s : std_logic;
     signal rx_data_s : std_logic_vector (7 downto 0);
-    signal tx_data_s : std_logic_vector (7 downto 0);
 
     signal reset_done_s : std_logic;
     signal dcm_locked_s : std_logic;
@@ -177,11 +188,24 @@ begin
     Inst_dcm: dcm PORT MAP(
         CLKIN_IN => tx_rx_clk_150mhz_bufg_s,
         RST_IN => pll_lock_out_not_s,
+        -- TODO, FIXME: Just wtf? clk_75mhz_s seams to be connected incorrectly
         CLKDV_OUT => clk_75mhz_s,
         CLKIN_IBUFG_OUT => open,
         CLK0_OUT => clk_75mhz_s,
-        LOCKED_OUT => platform_ready
+        LOCKED_OUT => dcm_locked_s
     );
+
+    Inst_parallel_to_serila_wrap: parallel_to_serila_wrap PORT MAP(
+        fast_clk => tx_rx_clk_150mhz_bufg_s,
+        slow_clk => clk_75mhz_bufg_s,
+        in_data_i_slow => tx_dout_i,
+        in_is_k_i_slow => tx_is_k_i,
+        out_is_k_i_fast => tx_is_k_s,
+        out_data_o_fast => tx_data_s
+    );
+
+    phy_error_o <= disp_err_s or not_in_table_err_s;
+    platform_ready <= dcm_locked_s and pll_lock_out_s and reset_done_s;
 
     sata_platform_i : SATA_PLATFORM
     generic map
@@ -199,7 +223,7 @@ begin
         TILE0_RXCHARISCOMMA0_OUT => open,
         TILE0_RXCHARISK0_OUT => rx_is_k_s,
         -- This should be connected to error phy_error
-        TILE0_RXDISPERR0_OUT => phy_error_o,
+        TILE0_RXDISPERR0_OUT => disp_err_s,
         -- This should be connected to error phy_error
         -- This is signal indicating that invalid symbol (8B/10B) was received.
         TILE0_RXNOTINTABLE0_OUT => not_in_table_err_s,
@@ -239,7 +263,7 @@ begin
         ---------------- Transmit Ports - 8b10b Encoder Control Ports --------------
         TILE0_TXCHARISK0_IN => tx_is_k_s,
         ------------------ Transmit Ports - TX Data Path interface -----------------
-        TILE0_TXDATA0_IN => ,
+        TILE0_TXDATA0_IN => tx_data_s,
         -- Clock witch I can't use; because this may be affected by phase
         -- alignment circuit (probably turned off) and it is not free running
         -- which I don't like.
@@ -251,10 +275,10 @@ begin
         -- SATA on the board is indexed from 1 not from zero so we use SATA 1.
         TILE0_TXN0_OUT => TX_N,
         TILE0_TXP0_OUT => TX_P,
-        TILE0_TXELECIDLE0_IN => tx_elec_idle_s,
+        TILE0_TXELECIDLE0_IN => tx_elec_idle_i,
         --------------------- Transmit Ports - TX Ports for SATA -------------------
-        TILE0_TXCOMSTART0_IN =>      ,
-        TILE0_TXCOMTYPE0_IN =>      ,
+        TILE0_TXCOMSTART0_IN => tx_comm_reset_i or tx_comm_wake_i,
+        TILE0_TXCOMTYPE0_IN => 0 when tx_comm_reset_i else 1,
         --------------------- Shared Ports - Tile and PLL Ports --------------------
         TILE0_CLKIN_IN => clk_150mhz_i,
         TILE0_GTPRESET_IN => phy_reset_i,

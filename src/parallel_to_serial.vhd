@@ -32,31 +32,11 @@ entity parallel_to_serial is
 end parallel_to_serial;
 
 architecture Behavioral of parallel_to_serial is
-    COMPONENT edge_detector
-    PORT(
-        clk : IN std_logic;
-        ce_i : IN std_logic;
-        in_i : IN std_logic;
-        positive_o : OUT std_logic;
-        negative_o : OUT std_logic;
-        edge_o : OUT std_logic
-        );
-    END COMPONENT;
-
     -- Temporary register to store data which need to be serialized.
     -- It's only 24 bit long because first 8 bits is send directly to output.
     signal tmpData: std_logic_vector(23 downto 0) := (others => '0');
     signal positive_edge: std_logic := '0';
 begin
-
-    Inst_edge_detector: edge_detector PORT MAP(
-        clk => fast_clk,
-        ce_i => '1',
-        in_i => slow_clk,
-        positive_o => positive_edge,
-        negative_o => open,
-        edge_o => open
-    );
 
      process (fast_clk)
      begin
