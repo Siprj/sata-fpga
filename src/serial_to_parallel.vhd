@@ -14,7 +14,6 @@ entity serial_to_parallel is
            data_o_slow : out  STD_LOGIC_VECTOR(31 downto 0);
            is_k_o_slow : out  STD_LOGIC_VECTOR(3 downto 0);
 
-            -- TODO: handle these elsewhere
            rx_elec_idle_i_fast : in STD_LOGIC;
            comm_init_detect_i_fast : in STD_LOGIC;
            comm_wake_detect_i_fast : in STD_LOGIC;
@@ -41,6 +40,9 @@ architecture Behavioral of serial_to_parallel is
     signal tmpDataOut: std_logic_vector(31 downto 0) := (others => '0');
     signal tmpIsKOut: std_logic_vector(3 downto 0) := (others => '0');
     signal tmpIsAlignedOut: std_logic := '0';
+    signal tmpRxElecIdleOut: std_logic := '0';
+    signal tmpCommInitDetectOut: std_logic := '0';
+    signal tmpCommWakeDetectOut: std_logic := '0';
     -- Buffer needs to hold up to 7 bytes to compensate different clock
     -- domains.
     signal tmpData: std_logic_vector(55 downto 0) := (others => '0');
@@ -53,6 +55,10 @@ architecture Behavioral of serial_to_parallel is
     -- Looks like only three values will be needed to time correctly next
     -- positive edge on the slow clock.
     signal clkPositiveEdgeCounter: std_logic_vector(1 downto 0);
+
+    signal rxElecIdleShouldAssert: std_logic := '0';
+    signal commInitDetectShouldAssert: std_logic := '0';
+    signal commWakeDetectShouldAssert: std_logic := '0';
 begin
 
     Inst_edge_detector: edge_detector PORT MAP(
@@ -69,6 +75,11 @@ begin
     begin
         if rising_edge(fast_clk) then
 
+            rx_elec_idle_o_slow <= tmpRxElecIdleOut;
+            comm_init_detect_o_slow <= tmpCommInitDetectOut;
+            comm_wake_detect_o_slow <= tmpCommWakeDetectOut;
+
+
             if positiveEdge = '1' then
                 clkPositiveEdgeCounter <= std_logic_vector(
                     to_unsigned(1, clkPositiveEdgeCounter'length));
@@ -76,6 +87,17 @@ begin
                 is_k_o_slow <= tmpIsKOut;
                 rx_byte_is_aligned_o_slow <= tmpIsAlignedOut;
 
+                if rx_elec_idle_i_fast = '1' then
+                    rxElecIdleShouldAssert <= '1';
+                end if;
+
+                if comm_init_detect_i_fast = '1' then
+                    commInitDetectShouldAssert <= '1';
+                end if;
+
+                if comm_wake_detect_i_fast = '1' then
+                    commWakeDetectShouldAssert <= '1';
+                end if;
             -- Test if we should put data out. Number 2 means we are one clock
             -- from the next positive edge of slow clock. So here we need to
             -- put our data out.
@@ -93,7 +115,8 @@ begin
                         is_k_o_slow(2 downto 0) <= tmpIsK(6 downto 4);
                         tmpIsKOut(2 downto 0) <= tmpIsK(6 downto 4);
 
-                        if rx_byte_is_aligned_i_fast = '1' or tmpIsAligned(6 downto 4) > "000" then
+                        if rx_byte_is_aligned_i_fast = '1'
+                            or tmpIsAligned(6 downto 4) > "000" then
                             rx_byte_is_aligned_o_slow <= '1';
                             tmpIsAlignedOut <= '1';
                         else
@@ -144,12 +167,52 @@ begin
                 clkPositiveEdgeCounter <=
                     std_logic_vector(unsigned(clkPositiveEdgeCounter) + 1);
 
+                -- Handle rxElectIdele, commInit and commWake
+                if rxElecIdleShouldAssert = '1' or rxElecIdleShouldAssert = '1' then
+                    rx_elec_idle_o_slow <= '1';
+                    tmpRxElecIdleOut <= '1';
+                    rxElecIdleShouldAssert <= '0';
+                else
+                    rx_elec_idle_o_slow <= '0';
+                    tmpRxElecIdleOut <= '0';
+                end if;
+
+                if comm_init_detect_i_fast = '1' or commInitDetectShouldAssert = '1' then
+                    comm_init_detect_o_slow <= '1';
+                    tmpCommInitDetectOut <= '1';
+                    commInitDetectShouldAssert <= '0';
+                else
+                    comm_init_detect_o_slow <= '0';
+                    tmpCommInitDetectOut <= '0';
+                end if;
+
+                if comm_wake_detect_i_fast = '1' or commWakeDetectShouldAssert = '1' then
+                    comm_wake_detect_o_slow <= '1';
+                    tmpCommWakeDetectOut <= '1';
+                    commInitDetectShouldAssert <= '0';
+                else
+                    comm_wake_detect_o_slow <= '0';
+                    tmpCommWakeDetectOut <= '0';
+                end if;
+
             else
                 clkPositiveEdgeCounter <=
                     std_logic_vector(unsigned(clkPositiveEdgeCounter) + 1);
                 data_o_slow <= tmpDataOut;
                 is_k_o_slow <= tmpIsKOut;
                 rx_byte_is_aligned_o_slow <= tmpIsAlignedOut;
+
+                if rx_elec_idle_i_fast = '1' then
+                    rxElecIdleShouldAssert <= '1';
+                end if;
+
+                if comm_init_detect_i_fast = '1' then
+                    commInitDetectShouldAssert <= '1';
+                end if;
+
+                if comm_wake_detect_i_fast = '1' then
+                    commWakeDetectShouldAssert <= '1';
+                end if;
             end if;
             -- Check if ALIGNp character was received and if so, set correct
             -- index for next data transfer.

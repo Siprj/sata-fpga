@@ -163,9 +163,11 @@ BEGIN
         wait for fast_clk_period;
         data_i_fast <= x"12";
         is_k_i_fast <= '0';
+        rx_elec_idle_i_fast <= '1';
         wait for fast_clk_period;
         data_i_fast <= x"34";
         is_k_i_fast <= '0';
+        rx_elec_idle_i_fast <= '0';
         wait for fast_clk_period;
         data_i_fast <= x"56";
         is_k_i_fast <= '0';
