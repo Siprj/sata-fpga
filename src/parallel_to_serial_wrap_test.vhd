@@ -39,11 +39,10 @@ ARCHITECTURE behavior OF parallel_to_serial_wrap_test IS
 
     -- Component Declaration for the Unit Under Test (UUT)
 
-    COMPONENT parallel_to_serila_wrap
+    COMPONENT parallel_to_serial_wrap
     PORT(
          fast_clk : IN  std_logic;
          slow_clk : IN  std_logic;
-         start_i_fast : IN  std_logic;
          in_data_i_slow : IN  std_logic_vector(31 downto 0);
          in_is_k_i_slow : IN  std_logic;
          out_is_k_i_fast : OUT  std_logic;
@@ -70,10 +69,9 @@ ARCHITECTURE behavior OF parallel_to_serial_wrap_test IS
 BEGIN
 
     -- Instantiate the Unit Under Test (UUT)
-    uut: parallel_to_serila_wrap PORT MAP (
+    uut: parallel_to_serial_wrap PORT MAP (
           fast_clk => fast_clk,
           slow_clk => slow_clk,
-          start_i_fast => start_i_fast,
           in_data_i_slow => in_data_i_slow,
           in_is_k_i_slow => in_is_k_i_slow,
           out_is_k_i_fast => out_is_k_i_fast,

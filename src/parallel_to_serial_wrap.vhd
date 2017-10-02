@@ -20,7 +20,7 @@
 library IEEE;
 use IEEE.STD_LOGIC_1164.ALL;
 
-entity parallel_to_serila_wrap is
+entity parallel_to_serial_wrap is
     Port ( fast_clk : in  STD_LOGIC;
            slow_clk : in  STD_LOGIC;
            in_data_i_slow : in  STD_LOGIC_VECTOR(31 downto 0);
@@ -28,9 +28,9 @@ entity parallel_to_serila_wrap is
            out_is_k_i_fast : out STD_LOGIC;
            out_data_o_fast : out  STD_LOGIC_VECTOR(7 downto 0)
    );
-end parallel_to_serila_wrap;
+end parallel_to_serial_wrap;
 
-architecture Behavioral of parallel_to_serila_wrap is
+architecture Behavioral of parallel_to_serial_wrap is
     COMPONENT edge_detector
     PORT(
         clk : IN std_logic;
