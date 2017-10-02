@@ -43,7 +43,6 @@ ARCHITECTURE behavior OF parallel_to_serial_test IS
     PORT(
          fast_clk : IN  std_logic;
          slow_clk : IN  std_logic;
-         start_i_fast : IN  std_logic;
          in_data_i_slow : IN  std_logic_vector(31 downto 0);
          in_is_k_i_slow : IN  std_logic;
          out_is_k_i_fast : OUT  std_logic;
@@ -57,7 +56,6 @@ ARCHITECTURE behavior OF parallel_to_serial_test IS
     signal slow_clk : std_logic := '0';
     signal in_data_i_slow : std_logic_vector(31 downto 0) := (others => '0');
     signal in_is_k_i_slow : std_logic := '0';
-    signal start_i_fast : std_logic := '0';
 
       --Outputs
     signal out_is_k_i_fast : std_logic;
@@ -73,7 +71,6 @@ BEGIN
     uut: parallel_to_serial PORT MAP (
           fast_clk => fast_clk,
           slow_clk => slow_clk,
-          start_i_fast => start_i_fast,
           in_data_i_slow => in_data_i_slow,
           in_is_k_i_slow => in_is_k_i_slow,
           out_is_k_i_fast => out_is_k_i_fast,
@@ -83,17 +80,17 @@ BEGIN
     -- Clock process definitions
     fast_clk_process :process
     begin
-        fast_clk <= '1';
-        wait for fast_clk_period/2;
         fast_clk <= '0';
+        wait for fast_clk_period/2;
+        fast_clk <= '1';
         wait for fast_clk_period/2;
     end process;
 
     slow_clk_process :process
     begin
-        slow_clk <= '1';
-        wait for slow_clk_period/2;
         slow_clk <= '0';
+        wait for slow_clk_period/2;
+        slow_clk <= '1';
         wait for slow_clk_period/2;
     end process;
 
@@ -103,19 +100,15 @@ BEGIN
     begin
 
         wait for fast_clk_period*4;
-        start_i_fast <= '1';
         in_data_i_slow <= x"AA990160";
         in_is_k_i_slow <= '0';
         wait for fast_clk_period;
-        start_i_fast <= '0';
         in_data_i_slow <= x"AA990160";
         in_is_k_i_slow <= '0';
         wait for fast_clk_period*3;
-        start_i_fast <= '1';
         in_data_i_slow <= x"7B4A4ABC";
         in_is_k_i_slow <= '1';
         wait for fast_clk_period;
-        start_i_fast <= '0';
         in_data_i_slow <= x"7B4A4ABC";
         in_is_k_i_slow <= '1';
         wait for fast_clk_period*3;
