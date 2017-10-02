@@ -136,6 +136,7 @@ BEGIN
         wait for fast_clk_period;
         data_i_fast <= x"BC";
         is_k_i_fast <= '1';
+        rx_byte_is_aligned_i_fast <= '1';
         wait for fast_clk_period;
         data_i_fast <= x"4A";
         is_k_i_fast <= '0';
