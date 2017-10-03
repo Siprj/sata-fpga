@@ -2,7 +2,7 @@ library IEEE;
 use IEEE.STD_LOGIC_1164.ALL;
 use IEEE.NUMERIC_STD.ALL;
 
-entity serial_to_parallel is
+entity input_sync is
     Port ( fast_clk : in  STD_LOGIC;
            slow_clk : in  STD_LOGIC;
            data_i_fast : in  STD_LOGIC_VECTOR(7 downto 0);
@@ -21,10 +21,10 @@ entity serial_to_parallel is
            comm_init_detect_o_slow : out STD_LOGIC;
            comm_wake_detect_o_slow : out STD_LOGIC
     );
-end serial_to_parallel;
+end input_sync;
 
 -- TODO, FIXME: Connect all signal form entity declaration!!!
-architecture Behavioral of serial_to_parallel is
+architecture Behavioral of input_sync is
 
     COMPONENT edge_detector
     PORT(

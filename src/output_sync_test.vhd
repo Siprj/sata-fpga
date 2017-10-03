@@ -4,13 +4,13 @@
 --
 -- Create Date:   14:46:24 09/23/2017
 -- Design Name:
--- Module Name:   /home/yrid/Programing/fpga/sigasiWorkspace/sata-fpga/src/parallel_to_serial_test.vhd
+-- Module Name:   /home/yrid/Programing/fpga/sigasiWorkspace/sata-fpga/src/output_sync_test.vhd
 -- Project Name:  sata-fpga
 -- Target Device:
 -- Tool versions:
 -- Description:
 --
--- VHDL Test Bench Created by ISE for module: parallel_to_serial
+-- VHDL Test Bench Created by ISE for module: output_sync
 --
 -- Dependencies:
 --
@@ -32,14 +32,14 @@ USE ieee.std_logic_1164.ALL;
 -- arithmetic functions with Signed or Unsigned values
 --USE ieee.numeric_std.ALL;
 
-ENTITY parallel_to_serial_test IS
-END parallel_to_serial_test;
+ENTITY output_sync_test IS
+END output_sync_test;
 
-ARCHITECTURE behavior OF parallel_to_serial_test IS
+ARCHITECTURE behavior OF output_sync_test IS
 
     -- Component Declaration for the Unit Under Test (UUT)
 
-    COMPONENT parallel_to_serial
+    COMPONENT output_sync
     PORT(
          fast_clk : IN  std_logic;
          slow_clk : IN  std_logic;
@@ -68,7 +68,7 @@ ARCHITECTURE behavior OF parallel_to_serial_test IS
 BEGIN
 
     -- Instantiate the Unit Under Test (UUT)
-    uut: parallel_to_serial PORT MAP (
+    uut: output_sync PORT MAP (
           fast_clk => fast_clk,
           slow_clk => slow_clk,
           in_data_i_slow => in_data_i_slow,
