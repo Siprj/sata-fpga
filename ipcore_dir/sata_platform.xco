@@ -1,7 +1,7 @@
 ##############################################################
 #
 # Xilinx Core Generator version 14.7
-# Date: Sun Jul  9 16:13:40 2017
+# Date: Thu Oct  5 17:49:36 2017
 #
 ##############################################################
 #
@@ -169,7 +169,7 @@ CSET gtp0_use_port_loopback=false
 CSET gtp0_use_port_phystatus=false
 CSET gtp0_use_port_rxbufreset=false
 CSET gtp0_use_port_rxbufstatus=false
-CSET gtp0_use_port_rxbyteisaligned=false
+CSET gtp0_use_port_rxbyteisaligned=true
 CSET gtp0_use_port_rxbyterealign=false
 CSET gtp0_use_port_rxcdrreset=false
 CSET gtp0_use_port_rxchariscomma=true
@@ -339,7 +339,7 @@ CSET gtp1_use_port_loopback=false
 CSET gtp1_use_port_phystatus=false
 CSET gtp1_use_port_rxbufreset=false
 CSET gtp1_use_port_rxbufstatus=false
-CSET gtp1_use_port_rxbyteisaligned=false
+CSET gtp1_use_port_rxbyteisaligned=true
 CSET gtp1_use_port_rxbyterealign=false
 CSET gtp1_use_port_rxcdrreset=false
 CSET gtp1_use_port_rxchariscomma=true
@@ -438,4 +438,4 @@ CSET use_txbuffer=true
 MISC pkg_timestamp=2013-10-13T18:46:09Z
 # END Extra information
 GENERATE
-# CRC: a439a2b0
+# CRC: 2c8a9f1d

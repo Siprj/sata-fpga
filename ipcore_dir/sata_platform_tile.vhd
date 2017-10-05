@@ -102,6 +102,8 @@ port
     RXCLKCORCNT0_OUT                        : out  std_logic_vector(2 downto 0);
     RXCLKCORCNT1_OUT                        : out  std_logic_vector(2 downto 0);
     --------------- Receive Ports - Comma Detection and Alignment --------------
+    RXBYTEISALIGNED0_OUT                    : out  std_logic;
+    RXBYTEISALIGNED1_OUT                    : out  std_logic;
     RXENMCOMMAALIGN0_IN                     : in   std_logic;
     RXENMCOMMAALIGN1_IN                     : in   std_logic;
     RXENPCOMMAALIGN0_IN                     : in   std_logic;
@@ -561,8 +563,8 @@ begin
         RXCLKCORCNT0                    =>      RXCLKCORCNT0_OUT,
         RXCLKCORCNT1                    =>      RXCLKCORCNT1_OUT,
         --------------- Receive Ports - Comma Detection and Alignment --------------
-        RXBYTEISALIGNED0                =>      open,
-        RXBYTEISALIGNED1                =>      open,
+        RXBYTEISALIGNED0                =>      RXBYTEISALIGNED0_OUT,
+        RXBYTEISALIGNED1                =>      RXBYTEISALIGNED1_OUT,
         RXBYTEREALIGN0                  =>      open,
         RXBYTEREALIGN1                  =>      open,
         RXCOMMADET0                     =>      open,

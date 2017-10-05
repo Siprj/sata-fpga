@@ -94,6 +94,8 @@ port
     TILE0_RXCLKCORCNT0_OUT                  : out  std_logic_vector(2 downto 0);
     TILE0_RXCLKCORCNT1_OUT                  : out  std_logic_vector(2 downto 0);
     --------------- Receive Ports - Comma Detection and Alignment --------------
+    TILE0_RXBYTEISALIGNED0_OUT              : out  std_logic;
+    TILE0_RXBYTEISALIGNED1_OUT              : out  std_logic;
     TILE0_RXENMCOMMAALIGN0_IN               : in   std_logic;
     TILE0_RXENMCOMMAALIGN1_IN               : in   std_logic;
     TILE0_RXENPCOMMAALIGN0_IN               : in   std_logic;
@@ -191,6 +193,8 @@ end component;
         TILE0_RXCLKCORCNT0_OUT          =>      ,
         TILE0_RXCLKCORCNT1_OUT          =>      ,
         --------------- Receive Ports - Comma Detection and Alignment --------------
+        TILE0_RXBYTEISALIGNED0_OUT      =>      ,
+        TILE0_RXBYTEISALIGNED1_OUT      =>      ,
         TILE0_RXENMCOMMAALIGN0_IN       =>      ,
         TILE0_RXENMCOMMAALIGN1_IN       =>      ,
         TILE0_RXENPCOMMAALIGN0_IN       =>      ,
