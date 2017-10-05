@@ -19,15 +19,8 @@
 ----------------------------------------------------------------------------------
 library IEEE;
 use IEEE.STD_LOGIC_1164.ALL;
+use IEEE.NUMERIC_STD.ALL;
 
--- Uncomment the following library declaration if using
--- arithmetic functions with Signed or Unsigned values
---use IEEE.NUMERIC_STD.ALL;
-
--- Uncomment the following library declaration if instantiating
--- any Xilinx primitives in this code.
---library UNISIM;
---use UNISIM.VComponents.all;
 
 entity data_write is
     Port ( clk : in  STD_LOGIC;
@@ -42,38 +35,44 @@ end data_write;
 
 architecture Behavioral of data_write is
 
-    signal r_count : std_logic_vector (23 downto 0) := 0;
+    signal r_count : std_logic_vector (23 downto 0) := (others => '0');
+    signal active : std_logic_vector (1 downto 0) := (others => '0');
 
 begin
-    -- Reset strobe signals
-    if (rising_edge(clk))
-        user_din_stb <= 0;
-        if (en) begin
-          if ((user_din_ready > 0) && (user_din_activate == 0)) begin
-            r_count <=  0;
-            if (user_din_ready(0)) begin
-              -- Channel 0 is open
-              user_din_activate(0) <=  1;
-            end
-            else begin
-              -- Channel 1 is open
-              user_din_activate(1) <=  1;
-            end
-          end
-          else begin
-            if (r_count < i_wr_size) begin
-              -- More room left in the buffer
-              r_count <= r_count + 1;
-              user_din_stb <= 1;
-              -- put the count in the data
-              o_wr_data <= r_count;
-            end
-            else begin
-              -- Filled up the buffer, release it
-              user_din_activate <=  0;
-            end
-          end
-        end
-    end
+
+    user_din_activate <= active;
+
+    process (clk)
+    begin
+        -- Reset strobe signals
+        if rising_edge(clk) then
+            user_din_stb <= '0';
+            if en = '1' then
+                if unsigned(user_din_ready) > 0
+                and unsigned(active) = 0 then
+                    r_count <=  std_logic_vector(to_unsigned(0, r_count'length));
+                    if (user_din_ready(0) = '1') then
+                        -- Channel 0 is open
+                        active(0) <=  '1';
+                    else
+                        -- Channel 1 is open
+                        active(1) <=  '1';
+                    end if;
+                else
+                    if unsigned(r_count) < unsigned(user_din_size) then
+                        -- More room left in the buffer
+                        r_count <= std_logic_vector(unsigned(r_count) + 1);
+                        user_din_stb <= '1';
+                        -- put the count in the data
+                        data_in(23 downto 0) <= r_count;
+                        data_in(31 downto 24) <= (others => '0');
+                    else
+                      -- Filled up the buffer, release it
+                      active <=  "00";
+                    end if;
+                end if;
+          end if;
+        end if;
+    end process;
 
 end Behavioral;
