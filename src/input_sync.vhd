@@ -17,9 +17,11 @@ entity input_sync is
            rx_elec_idle_i_fast : in STD_LOGIC;
            comm_init_detect_i_fast : in STD_LOGIC;
            comm_wake_detect_i_fast : in STD_LOGIC;
+           tx_oob_complete_i_fast : in STD_LOGIC;
            rx_elec_idle_o_slow : out STD_LOGIC;
            comm_init_detect_o_slow : out STD_LOGIC;
-           comm_wake_detect_o_slow : out STD_LOGIC
+           comm_wake_detect_o_slow : out STD_LOGIC;
+           tx_oob_complete_o_slow : out STD_LOGIC
     );
 end input_sync;
 
@@ -42,7 +44,9 @@ architecture Behavioral of input_sync is
     signal tmpIsAlignedOut: std_logic := '0';
     signal tmpRxElecIdleOut: std_logic := '0';
     signal tmpCommInitDetectOut: std_logic := '0';
-    signal tmpCommWakeDetectOut: std_logic := '0';
+	 signal tmpCommWakeDetectOut: std_logic := '0';
+    signal tmpTxOobComplete: std_logic := '0';
+    signal tmpTxOob: std_logic := '0';
     -- Buffer needs to hold up to 7 bytes to compensate different clock
     -- domains.
     signal tmpData: std_logic_vector(55 downto 0) := (others => '0');
@@ -59,6 +63,7 @@ architecture Behavioral of input_sync is
     signal rxElecIdleShouldAssert: std_logic := '0';
     signal commInitDetectShouldAssert: std_logic := '0';
     signal commWakeDetectShouldAssert: std_logic := '0';
+    signal txOobCompleteShouldAssert: std_logic := '0';
 begin
 
     Inst_edge_detector: edge_detector PORT MAP(
@@ -78,6 +83,7 @@ begin
             rx_elec_idle_o_slow <= tmpRxElecIdleOut;
             comm_init_detect_o_slow <= tmpCommInitDetectOut;
             comm_wake_detect_o_slow <= tmpCommWakeDetectOut;
+            tx_oob_complete_o_slow <= tmpTxOobComplete;
 
 
             if positiveEdge = '1' then
@@ -97,6 +103,9 @@ begin
 
                 if comm_wake_detect_i_fast = '1' then
                     commWakeDetectShouldAssert <= '1';
+                end if;
+                if tx_oob_complete_i_fast  = '1' then
+                    txOobCompleteShouldAssert <= '1';
                 end if;
             -- Test if we should put data out. Number 2 means we are one clock
             -- from the next positive edge of slow clock. So here we need to
@@ -195,6 +204,15 @@ begin
                     tmpCommWakeDetectOut <= '0';
                 end if;
 
+                if tx_oob_complete_i_fast = '1' or txOobCompleteShouldAssert = '1' then
+                    comm_wake_detect_o_slow <= '1';
+                    tmpTxOobComplete <= '1';
+                    txOobCompleteShouldAssert <= '0';
+                else
+                    tx_oob_complete_o_slow <= '0';
+                    tmpTxOobComplete <= '0';
+                end if;
+
             else
                 clkPositiveEdgeCounter <=
                     std_logic_vector(unsigned(clkPositiveEdgeCounter) + 1);
@@ -212,6 +230,9 @@ begin
 
                 if comm_wake_detect_i_fast = '1' then
                     commWakeDetectShouldAssert <= '1';
+                end if;
+                if tx_oob_complete_i_fast  = '1' then
+                    txOobCompleteShouldAssert <= '1';
                 end if;
             end if;
             -- Check if ALIGNp character was received and if so, set correct

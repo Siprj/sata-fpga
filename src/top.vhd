@@ -29,16 +29,19 @@ use IEEE.STD_LOGIC_1164.ALL;
 library UNISIM;
 use UNISIM.VComponents.all;
 
+
 entity top is
     Port (
         GPIO_DIP_SW1 : in  std_logic;
         GPIO_LED_0 : out  std_logic;
+        GPIO_LED_1 : out  std_logic;
+        GPIO_LED_2 : out  std_logic;
         SATA1_RX_N : in std_logic;
         SATA1_RX_P : in std_logic;
         SATA1_TX_N : out std_logic;
-        SATA1_TX_P : out std_logic
+        SATA1_TX_P : out std_logic;
         SATACLK_QO_N : in std_logic;
-        SATACLK_QO_P : in std_logic;
+        SATACLK_QO_P : in std_logic
    );
 end top;
 
@@ -93,7 +96,7 @@ architecture Behavioral of top is
         -- I don't know what this is ... These are disconnected in this example:
         -- https://github.com/CospanDesign/nysa-verilog/blob/master/verilog/wishbone/slave/wb_sata/rtl/wb_sata.v#L457
         -- so I'll do the same.
-        slw_buffer_pos : OUT std_logic_vector(3 downto 0)
+        slw_buffer_pos : OUT std_logic_vector(3 downto 0);
         slw_d_count : OUT std_logic_vector(12 downto 0);
         slw_in_data_addra : OUT std_logic_vector(23 downto 0);
         slw_write_count : OUT std_logic_vector(12 downto 0);
@@ -202,95 +205,215 @@ architecture Behavioral of top is
         dbg_lw_lax_state : OUT std_logic_vector(3 downto 0);
         dbg_send_holda : OUT std_logic;
         dbg_t_lax_state : OUT std_logic_vector(3 downto 0);
-        oob_state : OUT std_logic_vector(3 downto 0);
+        oob_state : OUT std_logic_vector(3 downto 0)
         );
     END COMPONENT;
 
-    signal comm_init_detect_s : std_logic;
-    signal comm_wake_detect_s : std_logic;
-    signal rx_elec_idle_s : std_logic;
-    signal tx_elec_idle_s : std_logic;
-    signal tx_is_k_s : std_logic;
-    signal rx_is_k_s : std_logic;
+    COMPONENT platform
+    PORT(
+        tx_dout_i : IN std_logic_vector(31 downto 0);
+        tx_is_k_i : IN std_logic;
+        tx_comm_reset_i : IN std_logic;
+        tx_comm_wake_i : IN std_logic;
+        tx_elec_idle_i : IN std_logic;
+        phy_reset_i : IN std_logic;
+        clk_150mhz_i : IN std_logic;
+        RX_N : IN std_logic;
+        RX_P : IN std_logic;
+        rx_din_o : OUT std_logic_vector(31 downto 0);
+        rx_is_k_o : OUT std_logic_vector(3 downto 0);
+        rx_elec_idle_o : OUT std_logic;
+        rx_byte_is_aligned_o : OUT std_logic;
+        comm_init_detect_o : OUT std_logic;
+        comm_wake_detect_o : OUT std_logic;
+        tx_oob_complete_o : OUT std_logic;
+        phy_error_o : OUT std_logic;
+        platform_ready : OUT std_logic;
+        clk_75mhz_o : OUT std_logic;
+        TX_N : OUT std_logic;
+        TX_P : OUT std_logic
+    );
+    END COMPONENT;
 
-    signal clk_150mhz_s : std_logic;
+    COMPONENT handle_reset
+    PORT(
+        clk : IN std_logic;
+        rst_o : OUT std_logic
+        );
+    END COMPONENT;
+
+    signal comm_init_detect_s: std_logic := '0';
+    signal comm_wake_detect_s: std_logic := '0';
+    signal rx_elec_idle_s: std_logic := '0';
+    signal tx_elec_idle_s: std_logic := '0';
+    signal tx_is_k_s: std_logic := '0';
+    signal rx_is_k_s: std_logic_vector(3 downto 0) := (others => '0');
+    signal tx_comm_reset_s: std_logic := '0';
+    signal tx_comm_wake_s: std_logic := '0';
+    signal tx_dout_s: std_logic_vector(31 downto 0) := (others => '0');
+    signal rx_din_s: std_logic_vector(31 downto 0) := (others => '0');
+    signal tx_oob_complete_s: std_logic := '0';
+    signal rx_byte_is_aligned_s: std_logic := '0';
+
+    signal clk_150mhz_s: std_logic := '0';
+    signal clk_75mhz_s: std_logic := '0';
+
+    signal platform_ready_s: std_logic := '0';
+    signal platform_not_ready_s: std_logic := '0';
+    signal sata_busy_s: std_logic := '0';
+    signal sata_ready_s: std_logic := '0';
+    signal platform_error_s: std_logic := '0';
+    signal sata_platform_error_s: std_logic := '0';
+    signal linkup_s: std_logic := '0';
+    signal hard_drive_error_s: std_logic := '0';
+    signal phy_ready_s: std_logic := '0';
+
+    signal dma_activate_stb_s: std_logic := '0';
+    signal d2h_reg_stb_s: std_logic := '0';
+    signal pio_setup_stb_s: std_logic := '0';
+    signal d2h_data_stb_s: std_logic := '0';
+    signal dma_setup_stb_s: std_logic := '0';
+    signal set_device_bits_stb_s: std_logic := '0';
+    signal d2h_fis_s: std_logic_vector(7 downto 0) := (others => '0');
+    signal d2h_interrupt_s: std_logic := '0';
+    signal d2h_notification_s: std_logic := '0';
+    signal d2h_port_mult_s: std_logic_vector(3 downto 0) := (others => '0');
+    signal d2h_device_s: std_logic_vector(7 downto 0) := (others => '0');
+    signal d2h_lba_s: std_logic_vector(47 downto 0) := (others => '0');
+    signal d2h_sector_count_s: std_logic_vector(15 downto 0) := (others => '0');
+    signal d2h_status_s: std_logic_vector(7 downto 0) := (others => '0');
+    signal d2h_error_s: std_logic_vector(7 downto 0) := (others => '0');
+
+    signal user_din_ready_s: std_logic_vector(1 downto 0) := (others => '0');
+    signal user_din_size_s: std_logic_vector(23 downto 0) := (others => '0');
+    signal user_din_empty_s: std_logic := '0';
+    signal data_in_s: std_logic_vector(31 downto 0) := (others => '0');
+    signal user_din_stb_s: std_logic := '0';
+    signal user_din_activate_s: std_logic_vector(1 downto 0) := (others => '0');
+    signal rst_s: std_logic := '0';
 
 begin
     GPIO_LED_0 <= GPIO_DIP_SW1;
+    GPIO_LED_1 <= phy_ready_s;
+    GPIO_LED_2 <= rst_s;
+
+    platform_not_ready_s <= not platform_ready_s;
+
     Inst_data_write: data_write PORT MAP(
-        clk => ,
-        en => ,
-        data_in => ,
-        user_din_stb => ,
-        user_din_ready => ,
-        user_din_activate => ,
-        user_din_size => ,
-        user_din_empty =>
+        clk => clk_75mhz_s,
+        -- TODO: enable should be used for a while.
+        en => '0',
+        data_in => data_in_s,
+        user_din_stb => user_din_stb_s,
+        user_din_ready => user_din_ready_s,
+        user_din_activate => user_din_activate_s,
+        user_din_size => user_din_size_s,
+        user_din_empty => user_din_empty_s
+    );
+
+    Inst_handle_reset: handle_reset PORT MAP(
+        clk => clk_150mhz_s,
+        rst_o => rst_s
+    );
+
+    Inst_platform: platform PORT MAP(
+        tx_dout_i => tx_dout_s,
+        tx_is_k_i => tx_is_k_s,
+        tx_comm_reset_i => tx_comm_reset_s,
+        tx_comm_wake_i => tx_comm_wake_s,
+        tx_elec_idle_i => tx_elec_idle_s,
+        rx_din_o => rx_din_s,
+        rx_is_k_o => rx_is_k_s,
+        rx_elec_idle_o => rx_elec_idle_s,
+        rx_byte_is_aligned_o => rx_byte_is_aligned_s,
+        comm_init_detect_o => comm_init_detect_s,
+        comm_wake_detect_o => comm_wake_detect_s,
+        tx_oob_complete_o => tx_oob_complete_s,
+        phy_error_o => sata_platform_error_s,
+        platform_ready => platform_ready_s,
+        phy_reset_i => rst_s,
+        clk_75mhz_o => clk_75mhz_s,
+        clk_150mhz_i => clk_150mhz_s,
+        TX_N => SATA1_TX_N,
+        TX_P => SATA1_TX_P,
+        RX_N => SATA1_RX_N,
+        RX_P => SATA1_RX_P
     );
 
     Inst_sata_stack: sata_stack PORT MAP(
-        rst => ,
-        clk => ,
-        data_in_clk => ,
-        data_in_clk_valid => ,
-        data_out_clk => ,
-        data_out_clk_valid => ,
-        platform_ready => ,
-        platform_error => ,
-        linkup => ,
-        send_sync_escape => ,
-        user_features => ,
-        sata_ready => ,
-        sata_busy => ,
-        hard_drive_error => ,
-        execute_command_stb => ,
-        command_layer_reset => ,
-        hard_drive_command => ,
-        pio_data_ready => ,
-        sector_count => ,
-        sector_address => ,
-        dma_activate_stb => ,
-        d2h_reg_stb => ,
-        pio_setup_stb => ,
-        d2h_data_stb => ,
-        dma_setup_stb => ,
-        set_device_bits_stb => ,
-        d2h_fis => ,
-        d2h_interrupt => ,
-        d2h_notification => ,
-        d2h_port_mult => ,
-        d2h_device => ,
-        d2h_lba => ,
-        d2h_sector_count => ,
-        d2h_status => ,
-        d2h_error => ,
-        user_din => ,
-        user_din_stb => ,
-        user_din_ready => ,
-        user_din_activate => ,
-        user_din_size => ,
-        user_din_empty => ,
-        user_dout => ,
-        user_dout_ready => ,
-        user_dout_activate => ,
-        user_dout_stb => ,
-        user_dout_size => ,
-        transport_layer_ready => ,
-        link_layer_ready => ,
-        phy_ready => ,
-        tx_dout => ,
+        -- TODO: Initial reset
+        rst => platform_not_ready_s,
+        clk => clk_75mhz_s,
+
+        data_in_clk => clk_75mhz_s,
+        data_in_clk_valid => platform_ready_s,
+
+        data_out_clk => clk_75mhz_s,
+        data_out_clk_valid => platform_ready_s,
+        platform_ready => platform_ready_s,
+        -- TODO: Should I do something with this signal?
+        platform_error => platform_error_s,
+        -- TODO: Indicate disc synchronization finished successfully.
+        linkup => linkup_s,
+        -- We don't want to disable any commands, at least for now.
+        send_sync_escape => '0',
+        -- TODO: Look if this is really not needed in any mysterious way.
+        user_features => (others => '0'),
+        sata_ready => sata_ready_s,
+        sata_busy => sata_busy_s,
+        hard_drive_error => hard_drive_error_s,
+        -- We won't send custom commands.
+        execute_command_stb => '0',
+        -- TODO: Don't know what this is.
+        command_layer_reset => '0',
+        hard_drive_command => (others => '0'),
+        pio_data_ready => open,
+        sector_count => (others => '0'),
+        sector_address => (others => '0'),
+        dma_activate_stb => dma_activate_stb_s,
+        d2h_reg_stb => d2h_reg_stb_s,
+        pio_setup_stb => pio_setup_stb_s,
+        d2h_data_stb => d2h_data_stb_s,
+        dma_setup_stb => dma_setup_stb_s,
+        set_device_bits_stb => set_device_bits_stb_s,
+        d2h_fis => d2h_fis_s,
+        d2h_interrupt => d2h_interrupt_s,
+        d2h_notification => d2h_notification_s,
+        d2h_port_mult => d2h_port_mult_s,
+        d2h_device => d2h_device_s,
+        d2h_lba => d2h_lba_s,
+        d2h_sector_count => d2h_sector_count_s,
+        d2h_status => d2h_status_s,
+        d2h_error => d2h_error_s,
+        user_din => data_in_s,
+        user_din_stb => user_din_stb_s,
+        user_din_ready => user_din_ready_s,
+        user_din_activate => user_din_activate_s,
+        user_din_size => user_din_size_s,
+        user_din_empty => user_din_empty_s,
+        user_dout => open,
+        user_dout_ready => open,
+        user_dout_activate => '0',
+        user_dout_stb => '0',
+        user_dout_size => open,
+        -- TODO: Is this correct?
+        transport_layer_ready => open,
+        -- TODO: Is this correct?
+        link_layer_ready => open,
+        phy_ready => phy_ready_s,
+        tx_dout => tx_dout_s,
         tx_is_k => tx_is_k_s,
-        tx_comm_reset => ,
-        tx_comm_wake => ,
+        tx_comm_reset => tx_comm_reset_s,
+        tx_comm_wake => tx_comm_wake_s,
         tx_elec_idle => tx_elec_idle_s,
-        rx_din => ,
+        rx_din => rx_din_s,
         rx_is_k => rx_is_k_s,
         rx_elec_idle => rx_elec_idle_s,
-        rx_byte_is_aligned => ,
+        rx_byte_is_aligned => rx_byte_is_aligned_s,
         comm_init_detect => comm_init_detect_s,
         comm_wake_detect => comm_wake_detect_s,
-        tx_oob_complete => ,
-        phy_error => ,
+        tx_oob_complete => tx_oob_complete_s,
+        phy_error => sata_platform_error_s,
         dbg_cc_lax_state => open,
         dbg_cw_lax_state => open,
         dbg_t_lax_state => open,
@@ -325,10 +448,10 @@ begin
         dbg_detect_preq_p => open,
         dbg_detect_xrdy_xrdy => open,
         dbg_send_holda => open,
-        slw_in_data_addra => ,
-        slw_d_count => ,
-        slw_write_count => ,
-        slw_buffer_pos =>
+        slw_in_data_addra => open,
+        slw_d_count => open,
+        slw_write_count => open,
+        slw_buffer_pos => open
     );
 
     -- Generate clock from clock differential pair.

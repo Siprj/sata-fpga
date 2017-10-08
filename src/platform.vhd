@@ -17,6 +17,7 @@ entity platform is
            rx_byte_is_aligned_o : out STD_LOGIC;
            comm_init_detect_o : out STD_LOGIC;
            comm_wake_detect_o : out STD_LOGIC;
+           tx_oob_complete_o : out STD_LOGIC;
 
            phy_error_o : out STD_LOGIC;
            platform_ready : out STD_LOGIC;
@@ -56,12 +57,14 @@ architecture Behavioral of platform is
         rx_elec_idle_i_fast : IN std_logic;
         comm_init_detect_i_fast : IN std_logic;
         comm_wake_detect_i_fast : IN std_logic;
+        tx_oob_complete_i_fast: IN std_logic;
         rx_byte_is_aligned_o_slow : OUT std_logic;
         data_o_slow : OUT std_logic_vector(31 downto 0);
         is_k_o_slow : OUT std_logic_vector(3 downto 0);
         rx_elec_idle_o_slow : OUT std_logic;
         comm_init_detect_o_slow : OUT std_logic;
-        comm_wake_detect_o_slow : OUT std_logic
+        comm_wake_detect_o_slow : OUT std_logic;
+        tx_oob_complete_o_slow: OUT std_logic
     );
     END COMPONENT;
 
@@ -169,6 +172,7 @@ architecture Behavioral of platform is
 
     signal comm_init_detect_s : std_logic := '0';
     signal comm_wake_detect_s : std_logic := '0';
+    signal tx_oob_complete_s : std_logic := '0';
     signal rx_elec_idle_s : std_logic := '0';
     signal tx_is_k_s : std_logic := '0';
     signal tx_data_s : std_logic_vector (7 downto 0);
@@ -237,8 +241,10 @@ begin
         rx_elec_idle_o_slow => rx_elec_idle_o,
         comm_init_detect_i_fast => comm_init_detect_s,
         comm_wake_detect_i_fast => comm_wake_detect_s,
+        tx_oob_complete_i_fast => tx_oob_complete_s,
         comm_init_detect_o_slow => comm_init_detect_o,
-        comm_wake_detect_o_slow => comm_wake_detect_o
+        comm_wake_detect_o_slow => comm_wake_detect_o,
+        tx_oob_complete_o_slow => tx_oob_complete_o
     );
 
     Inst_output_sync: output_sync PORT MAP(
@@ -304,7 +310,7 @@ begin
         -------- Receive Ports - RX Elastic Buffer and Phase Alignment Ports -------
         -- TODO: is this correct? TILE0_RXSTATUS0_OUT(0) is TXCOMSTART and it
         -- is weird not to be connected...
-        TILE0_RXSTATUS0_OUT(0) => open,
+        TILE0_RXSTATUS0_OUT(0) => tx_oob_complete_s,
         TILE0_RXSTATUS0_OUT(1) => comm_wake_detect_s,
         TILE0_RXSTATUS0_OUT(2) => comm_init_detect_s,
         ---------------- Transmit Ports - 8b10b Encoder Control Ports --------------
