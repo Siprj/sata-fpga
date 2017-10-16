@@ -36,15 +36,16 @@ end platform;
 
 architecture Behavioral of platform is
 
-    COMPONENT dcm
+    COMPONENT clk_generator_75MHz
     PORT(
+        CLKFB_IN : IN std_logic;
         CLKIN_IN : IN std_logic;
         RST_IN : IN std_logic;
         CLKDV_OUT : OUT std_logic;
         CLKIN_IBUFG_OUT : OUT std_logic;
         CLK0_OUT : OUT std_logic;
         LOCKED_OUT : OUT std_logic
-    );
+        );
     END COMPONENT;
 
     COMPONENT input_sync
@@ -190,6 +191,8 @@ architecture Behavioral of platform is
     signal clk_75mhz_bufg_s : std_logic := '0';
     signal tx_rx_clk_150mhz_s : std_logic := '0';
     signal tx_rx_clk_150mhz_bufg_s : std_logic := '0';
+    signal clk_300mhz_clk0_s : std_logic := '0';
+    signal clk_300mhz_clk0_bufg_s : std_logic := '0';
 
     signal disp_err_s : std_logic := '0';
     signal not_in_table_err_s : std_logic := '0';
@@ -218,18 +221,25 @@ begin
         I => tx_rx_clk_150mhz_s      -- Clock buffer input
     );
 
-    Inst_dcm: dcm PORT MAP(
+    BUFG_inst3 : BUFG
+    port map (
+        O => clk_300mhz_clk0_bufg_s,     -- Clock buffer output
+        I => clk_300mhz_clk0_s      -- Clock buffer input
+    );
+
+    Inst_clk_generator_75MHz: clk_generator_75MHz PORT MAP(
+        CLKFB_IN => clk_300mhz_clk0_bufg_s,
         CLKIN_IN => tx_rx_clk_150mhz_bufg_s,
         RST_IN => pll_lock_out_not_s,
         -- TODO, FIXME: Just wtf? clk_75mhz_s seams to be connected incorrectly
         CLKDV_OUT => clk_75mhz_s,
         CLKIN_IBUFG_OUT => open,
-        CLK0_OUT => clk_75mhz_s,
+        CLK0_OUT => clk_300mhz_clk0_s,
         LOCKED_OUT => dcm_locked_s
     );
 
     Inst_input_sync: input_sync PORT MAP(
-        fast_clk => tx_rx_clk_150mhz_bufg_s,
+        fast_clk => clk_300mhz_clk0_bufg_s,
         slow_clk => clk_75mhz_bufg_s,
         data_i_fast => rx_data_s,
         is_k_i_fast => rx_is_k_s,
@@ -248,7 +258,7 @@ begin
     );
 
     Inst_output_sync: output_sync PORT MAP(
-        fast_clk => tx_rx_clk_150mhz_bufg_s,
+        fast_clk => clk_300mhz_clk0_bufg_s,
         slow_clk => clk_75mhz_bufg_s,
         in_data_i_slow => tx_dout_i,
         in_is_k_i_slow => tx_is_k_i,
@@ -293,8 +303,8 @@ begin
         TILE0_RXDATA0_OUT => rx_data_s,
         -- Recovered clock from the CDR.
         TILE0_RXRECCLK0_OUT => open,
-        TILE0_RXUSRCLK0_IN => tx_rx_clk_150mhz_bufg_s,
-        TILE0_RXUSRCLK20_IN => tx_rx_clk_150mhz_bufg_s,
+        TILE0_RXUSRCLK0_IN => clk_300mhz_clk0_bufg_s,
+        TILE0_RXUSRCLK20_IN => clk_300mhz_clk0_bufg_s,
         ------- Receive Ports - RX Driver,OOB signalling,Coupling and Eq.,CDR ------
         TILE0_RXELECIDLE0_OUT => rx_elec_idle_s,
         -- Equalization setup
@@ -321,8 +331,8 @@ begin
         -- alignment circuit (probably turned off) and it is not free running
         -- which I don't like.
         TILE0_TXOUTCLK0_OUT => open,
-        TILE0_TXUSRCLK0_IN => tx_rx_clk_150mhz_bufg_s,
-        TILE0_TXUSRCLK20_IN => tx_rx_clk_150mhz_bufg_s,
+        TILE0_TXUSRCLK0_IN => clk_300mhz_clk0_bufg_s,
+        TILE0_TXUSRCLK20_IN => clk_300mhz_clk0_bufg_s,
         --------------- Transmit Ports - TX Driver and OOB signalling --------------
         -- Connect directly to the output pin.
         -- SATA on the board is indexed from 1 not from zero so we use SATA 1.
