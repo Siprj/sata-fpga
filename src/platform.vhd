@@ -36,14 +36,13 @@ end platform;
 
 architecture Behavioral of platform is
 
-    COMPONENT clk_generator_75MHz
+  COMPONENT clk_generator_75MHz
     PORT(
-        CLKFB_IN : IN std_logic;
         CLKIN_IN : IN std_logic;
         RST_IN : IN std_logic;
         CLKDV_OUT : OUT std_logic;
-        CLKIN_IBUFG_OUT : OUT std_logic;
         CLK0_OUT : OUT std_logic;
+        CLK0_OUT1 : OUT std_logic;
         LOCKED_OUT : OUT std_logic
         );
     END COMPONENT;
@@ -190,7 +189,7 @@ architecture Behavioral of platform is
     signal clk_75mhz_s : std_logic := '0';
     signal clk_75mhz_bufg_s : std_logic := '0';
     signal tx_rx_clk_150mhz_s : std_logic := '0';
-    signal tx_rx_clk_150mhz_bufg_s : std_logic := '0';
+    signal tx_rx_clk_150mhz_bufg_s: std_logic;
     signal clk_300mhz_clk0_s : std_logic := '0';
     signal clk_300mhz_clk0_bufg_s : std_logic := '0';
 
@@ -215,26 +214,13 @@ begin
         I => clk_75mhz_s      -- Clock buffer input
     );
 
-    BUFG_inst2 : BUFG
-    port map (
-        O => tx_rx_clk_150mhz_bufg_s,     -- Clock buffer output
-        I => tx_rx_clk_150mhz_s      -- Clock buffer input
-    );
-
-    BUFG_inst3 : BUFG
-    port map (
-        O => clk_300mhz_clk0_bufg_s,     -- Clock buffer output
-        I => clk_300mhz_clk0_s      -- Clock buffer input
-    );
-
     Inst_clk_generator_75MHz: clk_generator_75MHz PORT MAP(
-        CLKFB_IN => clk_300mhz_clk0_bufg_s,
         CLKIN_IN => tx_rx_clk_150mhz_bufg_s,
         RST_IN => pll_lock_out_not_s,
         -- TODO, FIXME: Just wtf? clk_75mhz_s seams to be connected incorrectly
         CLKDV_OUT => clk_75mhz_s,
-        CLKIN_IBUFG_OUT => open,
-        CLK0_OUT => clk_300mhz_clk0_s,
+        CLK0_OUT => clk_300mhz_clk0_bufg_s,
+        CLK0_OUT1 => open,
         LOCKED_OUT => dcm_locked_s
     );
 
@@ -347,7 +333,7 @@ begin
         TILE0_GTPRESET_IN => phy_reset_i,
         TILE0_PLLLKDET_OUT => pll_lock_out_s,
         -- TODO: Why does this exist?
-        TILE0_REFCLKOUT_OUT => tx_rx_clk_150mhz_s,
+        TILE0_REFCLKOUT_OUT => tx_rx_clk_150mhz_bufg_s,
         TILE0_RESETDONE0_OUT => reset_done_s,
         TILE0_RESETDONE1_OUT => open,
 

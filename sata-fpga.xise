@@ -125,8 +125,8 @@
       <association xil_pn:name="PostTranslateSimulation" xil_pn:seqID="109"/>
     </file>
     <file xil_pn:name="nysa-sata/rtl/sata_defines.v" xil_pn:type="FILE_VERILOG">
-      <association xil_pn:name="BehavioralSimulation" xil_pn:seqID="1" xil_pn:seqIDinc="28"/>
-      <association xil_pn:name="Implementation" xil_pn:seqID="1" xil_pn:seqIDinc="28"/>
+      <association xil_pn:name="BehavioralSimulation" xil_pn:seqID="1" xil_pn:seqIDinc="27"/>
+      <association xil_pn:name="Implementation" xil_pn:seqID="1" xil_pn:seqIDinc="27"/>
     </file>
     <file xil_pn:name="src/data_write_test.vhd" xil_pn:type="FILE_VHDL">
       <association xil_pn:name="BehavioralSimulation" xil_pn:seqID="0"/>

@@ -25,7 +25,8 @@ entity input_sync is
     );
 end input_sync;
 
--- TODO, FIXME: Connect all signal form entity declaration!!!
+-- TODO, FIXME: There is warring regarding tmpIsAligned which seams to be
+-- important.
 architecture Behavioral of input_sync is
 
     COMPONENT edge_detector
@@ -44,9 +45,8 @@ architecture Behavioral of input_sync is
     signal tmpIsAlignedOut: std_logic := '0';
     signal tmpRxElecIdleOut: std_logic := '0';
     signal tmpCommInitDetectOut: std_logic := '0';
-	 signal tmpCommWakeDetectOut: std_logic := '0';
+    signal tmpCommWakeDetectOut: std_logic := '0';
     signal tmpTxOobComplete: std_logic := '0';
-    signal tmpTxOob: std_logic := '0';
     -- Buffer needs to hold up to 7 bytes to compensate different clock
     -- domains.
     signal tmpData: std_logic_vector(55 downto 0) := (others => '0');
