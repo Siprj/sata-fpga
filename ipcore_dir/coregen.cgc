@@ -445,7 +445,7 @@
          <spirit:componentRef spirit:vendor="xilinx.com" spirit:library="ip" spirit:name="dcmadv" spirit:version="13.1" />
          <spirit:configurableElementValues>
             <spirit:configurableElementValue spirit:referenceId="PARAM_VALUE.COMPONENT_NAME">clk_generator_75MHz</spirit:configurableElementValue>
-            <spirit:configurableElementValue spirit:referenceId="PARAM_VALUE.XAWFILENAME">/home/yrid/Programing/FPGA/sata-fpga/ipcore_dir/clk_generator_75MHz.xaw</spirit:configurableElementValue>
+            <spirit:configurableElementValue spirit:referenceId="PARAM_VALUE.XAWFILENAME">/home/yrid/Programing/fpga/sigasiWorkspace/sata-fpga/ipcore_dir/clk_generator_75MHz.xaw</spirit:configurableElementValue>
          </spirit:configurableElementValues>
          <spirit:vendorExtensions>
             <xilinx:instanceProperties>
@@ -485,7 +485,7 @@
          <spirit:componentRef spirit:vendor="xilinx.com" spirit:library="ip" spirit:name="dcmadv" spirit:version="13.1" />
          <spirit:configurableElementValues>
             <spirit:configurableElementValue spirit:referenceId="PARAM_VALUE.COMPONENT_NAME">dcm</spirit:configurableElementValue>
-            <spirit:configurableElementValue spirit:referenceId="PARAM_VALUE.XAWFILENAME">/home/yrid/Programing/FPGA/sata-fpga/ipcore_dir/dcm.xaw</spirit:configurableElementValue>
+            <spirit:configurableElementValue spirit:referenceId="PARAM_VALUE.XAWFILENAME">/home/yrid/Programing/fpga/sigasiWorkspace/sata-fpga/ipcore_dir/dcm.xaw</spirit:configurableElementValue>
          </spirit:configurableElementValues>
          <spirit:vendorExtensions>
             <xilinx:instanceProperties>

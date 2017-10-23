@@ -235,12 +235,12 @@ architecture Behavioral of top is
     );
     END COMPONENT;
 
-    COMPONENT handle_reset
-    PORT(
-        clk : IN std_logic;
-        rst_o : OUT std_logic
-        );
-    END COMPONENT;
+--    COMPONENT handle_reset
+--    PORT(
+--        clk : IN std_logic;
+--        rst_o : OUT std_logic
+--        );
+--    END COMPONENT;
 
     signal comm_init_detect_s: std_logic := '0';
     signal comm_wake_detect_s: std_logic := '0';
@@ -255,8 +255,8 @@ architecture Behavioral of top is
     signal tx_oob_complete_s: std_logic := '0';
     signal rx_byte_is_aligned_s: std_logic := '0';
 
-    signal clk_150mhz_s: std_logic := '0';
-    signal clk_75mhz_s: std_logic := '0';
+    signal clk_150mhz_s: std_logic;
+    signal clk_75mhz_s: std_logic;
 
     signal platform_ready_s: std_logic := '0';
     signal platform_not_ready_s: std_logic := '0';
@@ -296,6 +296,7 @@ begin
     GPIO_LED_0 <= GPIO_DIP_SW1;
     GPIO_LED_1 <= phy_ready_s;
     GPIO_LED_2 <= rst_s;
+    rst_s <= GPIO_DIP_SW1;
 
     platform_not_ready_s <= not platform_ready_s;
 
@@ -311,10 +312,10 @@ begin
         user_din_empty => user_din_empty_s
     );
 
-    Inst_handle_reset: handle_reset PORT MAP(
-        clk => clk_150mhz_s,
-        rst_o => rst_s
-    );
+--    Inst_handle_reset: handle_reset PORT MAP(
+--        clk => clk_150mhz_s,
+--        rst_o => rst_s
+--    );
 
     Inst_platform: platform PORT MAP(
         tx_dout_i => tx_dout_s,
