@@ -1,7 +1,7 @@
 ##############################################################
 #
 # Xilinx Core Generator version 14.7
-# Date: Mon Oct 23 16:11:04 2017
+# Date: Sun Jan 21 12:31:08 2018
 #
 ##############################################################
 #
@@ -418,8 +418,8 @@ CSET use_gtp_dual_x0_y0=false
 CSET use_gtp_dual_x0_y1=false
 CSET use_gtp_dual_x0_y10=false
 CSET use_gtp_dual_x0_y11=false
-CSET use_gtp_dual_x0_y2=true
-CSET use_gtp_dual_x0_y3=false
+CSET use_gtp_dual_x0_y2=false
+CSET use_gtp_dual_x0_y3=true
 CSET use_gtp_dual_x0_y4=false
 CSET use_gtp_dual_x0_y5=false
 CSET use_gtp_dual_x0_y6=false
@@ -438,4 +438,4 @@ CSET use_txbuffer=true
 MISC pkg_timestamp=2013-10-13T18:46:09Z
 # END Extra information
 GENERATE
-# CRC: 2c8a9f1d
+# CRC: 4ef99c45

@@ -178,7 +178,7 @@ end component;
     (
         --_____________________________________________________________________
         --_____________________________________________________________________
-        --TILE0  (X0Y2)
+        --TILE0  (X0Y3)
 
         ----------------------- Receive Ports - 8b10b Decoder ----------------------
         TILE0_RXCHARISCOMMA0_OUT        =>      ,
@@ -263,8 +263,8 @@ end component;
     port map
     (
         O                               =>      ,
-        I                               =>      ,  -- Connect to package pin AF4
-        IB                              =>        -- Connect to package pin AF3
+        I                               =>      ,  -- Connect to package pin Y4
+        IB                              =>        -- Connect to package pin Y3
     );
 
 

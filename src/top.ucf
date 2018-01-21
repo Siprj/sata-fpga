@@ -2,12 +2,13 @@ NET GPIO_DIP_SW1         LOC="U25";   # Bank 15, Vcco=1.8V, DCI using 49.9 ohm r
 NET GPIO_LED_0           LOC="H18";   # Bank 3, Vcco=2.5V, No DCI
 NET GPIO_LED_1           LOC="L18";   # Bank 3, Vcco=2.5V, No DCI
 NET GPIO_LED_2           LOC="G15";   # Bank 3, Vcco=2.5V, No DCI
-NET SATACLK_QO_N         LOC="AF4";   # Bank 114, MGTREFCLKN_114, GTP_DUAL_X0Y2
-NET SATACLK_QO_P         LOC="AF3";   # Bank 114, MGTREFCLKP_114, GTP_DUAL_X0Y2
 
-# NET SATA1_RX_N           LOC="Y1";    # Bank 114, MGTRXN0_114, GTP_DUAL_X0Y2
-# NET SATA1_RX_P           LOC="W1";    # Bank 114, MGTRXP0_114, GTP_DUAL_X0Y2
-# NET SATA1_TX_N           LOC="W2";    # Bank 114, MGTTXN0_114, GTP_DUAL_X0Y2
-# NET SATA1_TX_P           LOC="V2";    # Bank 114, MGTTXP0_114, GTP_DUAL_X0Y2
+NET SATACLK_QO_N         LOC="Y3";   # Bank 114, MGTREFCLKN_114, GTP_DUAL_X0Y3
+NET SATACLK_QO_P         LOC="Y4";   # Bank 114, MGTREFCLKP_114, GTP_DUAL_X0Y3
 
-INST Inst_platform/sata_platform_i/tile0_sata_platform_i/gtp_dual_i LOC=GTP_DUAL_X0Y2;
+NET SATA1_RX_N           LOC="Y1";    # Bank 114, MGTRXN0_114, GTP_DUAL_X0Y3
+NET SATA1_RX_P           LOC="W1";    # Bank 114, MGTRXP0_114, GTP_DUAL_X0Y3
+NET SATA1_TX_N           LOC="W2";    # Bank 114, MGTTXN0_114, GTP_DUAL_X0Y3
+NET SATA1_TX_P           LOC="V2";    # Bank 114, MGTTXP0_114, GTP_DUAL_X0Y3
+
+INST Inst_platform/sata_platform_i/tile0_sata_platform_i/gtp_dual_i LOC=GTP_DUAL_X0Y3;

@@ -291,6 +291,8 @@ architecture Behavioral of top is
     signal user_din_stb_s: std_logic := '0';
     signal user_din_activate_s: std_logic_vector(1 downto 0) := (others => '0');
     signal rst_s: std_logic := '0';
+	 
+	 signal tmp_clk: std_logic;
 
 begin
     GPIO_LED_0 <= GPIO_DIP_SW1;
@@ -460,8 +462,8 @@ begin
     port map
     (
         O => clk_150mhz_s,
-        I => SATACLK_QO_N,  -- Connect to package pin Y4
-        IB => SATACLK_QO_P -- Connect to package pin Y3
+        I => SATACLK_QO_P,  -- Connect to package pin Y4
+        IB => SATACLK_QO_N -- Connect to package pin Y3
     );
 
 end Behavioral;
